@@ -1,3 +1,4 @@
+简体中文  |  [English](https://github.com/Tencent-RTC/TencentEffect_iOS/blob/main/README.md)
 # TencentEffect_iOS
 
 ## TEBeautyDemo
