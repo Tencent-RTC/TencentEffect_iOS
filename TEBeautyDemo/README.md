@@ -22,13 +22,13 @@ This project is a demo project for TencentEffectSDK, demonstrating how to integr
 
 # Customize the Main Category
 
-![img](./Doc/20240508-level-EN@2x.png)
+![img](./Doc/20240508-Level-EN@2x.png)
 
 Different packages of TencentEffectSDK have different capabilities. For example, if some packages do not have the "Body Beauty" capability, the "Body Beauty" entry should not appear on the UI panel. To customize the main category, please modify the initBeautyJson method of TECameraViewController, and set the paths of beauty, body beauty, filters, etc. in `[TEUIConfig shareInstance] setTEPanelViewRes:...... `in order. If you don't need a certain category, just pass in nil at the corresponding position.
 
 The json configuration files for various beauty effects are located in the `Pods/Development Pods/TEBeautyKit/json/beauty_panel` directory of the demo project, as shown in the figure below. Please pass in the correct path in the `[TEUIConfig shareInstance] setTEPanelViewRes:...... `method.
 
-![cb2fccb9-16f8-45dd-8254-27eb8acf2a38](./Doc/20240508-panel.png)
+![](./Doc/20240508-panel.png)
 
 # Customize the List of Filters/Motions/Segmentation Materials.
 
