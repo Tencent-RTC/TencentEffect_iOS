@@ -4,7 +4,7 @@
 
 本工程是 TencentEffectSDK 的 demo 工程，演示了如何带 UI 接入 TencentEffectSDK。UI样式如下：
 
-![20240422-174738@2x](./doc/20240508-CN@2x.png)
+![20240422-174738@2x](./Doc/20240508-CN@2x.png)
 
 # 快速开始
 
@@ -18,19 +18,19 @@
 
 - 如遇到Masonry报以下错误，根据下后一张图修改对应最低支持版本号为12.0后重新运行demo。
 
-  ![20240422-174738@2x](./doc/20240508-Masonry.png)
+  ![20240422-174738@2x](./Doc/20240508-Masonry.png)
 
-  ![20240422-174738@2x](./doc/20240508-MasonryFix.png)
+  ![20240422-174738@2x](./Doc/20240508-MasonryFix.png)
 
 # 自定义主分类
 
-![](./doc/20240508-level-CN@2x.png)
+![](./Doc/20240508-level-CN@2x.png)
 
 TencentEffectSDK的不同套餐具备不同的能力，例如某些套餐没有”美体“能力，那么 UI 面板上就不应该出现 ”美体“ 入口。自定义主分类请修改TECameraViewController的initBeautyJson方法，在[TEUIConfig shareInstance] setTEPanelViewRes:中依次设置美颜、美体、滤镜等路径，如果不需要某一类，则在对应的位置传入nil即可。
 
 各类美颜的json配置文件位于demo工程的Pods/Development Pods/TEBeautyKit/json/beauty_panel目录，如下图所示，请在[TEUIConfig shareInstance] setTEPanelViewRes:......方法中传入正确的路径。
 
-![cb2fccb9-16f8-45dd-8254-27eb8acf2a38](./doc/20240508-panel.png)
+![cb2fccb9-16f8-45dd-8254-27eb8acf2a38](./Doc/20240508-panel.png)
 
 # 自定义滤镜/动效/分割素材列表
 
