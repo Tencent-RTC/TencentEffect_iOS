@@ -1,0 +1,524 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		23B33FF21F3F46C595836A02 /* Pods_TEBeautyDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86000F7BA8516769A9531137 /* Pods_TEBeautyDemo.framework */; };
+		6E2908C72C2C3CFD007C35BE /* RadioButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E2908C62C2C3CFD007C35BE /* RadioButton.m */; };
+		6E2908CB2C2D4B92007C35BE /* RadioButton-Unselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E2908C92C2D4B92007C35BE /* RadioButton-Unselected.png */; };
+		6E2908CC2C2D4B92007C35BE /* RadioButton-Selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E2908CA2C2D4B92007C35BE /* RadioButton-Selected.png */; };
+		C00F3FD32BEB5BA7005B18C6 /* makeupMotionRes.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C00F3FCE2BEB5BA7005B18C6 /* makeupMotionRes.bundle */; };
+		C00F3FD42BEB5BA7005B18C6 /* 2dMotionRes.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C00F3FCF2BEB5BA7005B18C6 /* 2dMotionRes.bundle */; };
+		C00F3FD52BEB5BA7005B18C6 /* 3dMotionRes.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C00F3FD02BEB5BA7005B18C6 /* 3dMotionRes.bundle */; };
+		C00F3FD62BEB5BA7005B18C6 /* segmentMotionRes.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C00F3FD12BEB5BA7005B18C6 /* segmentMotionRes.bundle */; };
+		C00F3FD72BEB5BA7005B18C6 /* lut.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C00F3FD22BEB5BA7005B18C6 /* lut.bundle */; };
+		C02115B12BD8B2E80093A50E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C02115B02BD8B2E80093A50E /* AppDelegate.m */; };
+		C02115B42BD8B2E80093A50E /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C02115B32BD8B2E80093A50E /* SceneDelegate.m */; };
+		C02115B72BD8B2E80093A50E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C02115B62BD8B2E80093A50E /* ViewController.m */; };
+		C02115BA2BD8B2E80093A50E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C02115B82BD8B2E80093A50E /* Main.storyboard */; };
+		C02115BC2BD8B2E80093A50E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C02115BB2BD8B2E80093A50E /* Assets.xcassets */; };
+		C02115BF2BD8B2E80093A50E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C02115BD2BD8B2E80093A50E /* LaunchScreen.storyboard */; };
+		C02115C22BD8B2E80093A50E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C02115C12BD8B2E80093A50E /* main.m */; };
+		C0A1BDFE2BD927EC0097FD72 /* TECameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C0A1BDFD2BD927EC0097FD72 /* TECameraViewController.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		261056C19842FA1C6CFC646B /* Pods-TEBeautyDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TEBeautyDemo.release.xcconfig"; path = "Target Support Files/Pods-TEBeautyDemo/Pods-TEBeautyDemo.release.xcconfig"; sourceTree = "<group>"; };
+		6E2908C52C2C3CFD007C35BE /* RadioButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RadioButton.h; sourceTree = "<group>"; };
+		6E2908C62C2C3CFD007C35BE /* RadioButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RadioButton.m; sourceTree = "<group>"; };
+		6E2908C92C2D4B92007C35BE /* RadioButton-Unselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "RadioButton-Unselected.png"; sourceTree = "<group>"; };
+		6E2908CA2C2D4B92007C35BE /* RadioButton-Selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "RadioButton-Selected.png"; sourceTree = "<group>"; };
+		86000F7BA8516769A9531137 /* Pods_TEBeautyDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TEBeautyDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		ADCC5A7153FB5BDEF17519D2 /* Pods-TEBeautyDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TEBeautyDemo.debug.xcconfig"; path = "Target Support Files/Pods-TEBeautyDemo/Pods-TEBeautyDemo.debug.xcconfig"; sourceTree = "<group>"; };
+		C00F3FCE2BEB5BA7005B18C6 /* makeupMotionRes.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = makeupMotionRes.bundle; sourceTree = "<group>"; };
+		C00F3FCF2BEB5BA7005B18C6 /* 2dMotionRes.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = 2dMotionRes.bundle; sourceTree = "<group>"; };
+		C00F3FD02BEB5BA7005B18C6 /* 3dMotionRes.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = 3dMotionRes.bundle; sourceTree = "<group>"; };
+		C00F3FD12BEB5BA7005B18C6 /* segmentMotionRes.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = segmentMotionRes.bundle; sourceTree = "<group>"; };
+		C00F3FD22BEB5BA7005B18C6 /* lut.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = lut.bundle; sourceTree = "<group>"; };
+		C02115AC2BD8B2E80093A50E /* TEBeautyDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TEBeautyDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C02115AF2BD8B2E80093A50E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		C02115B02BD8B2E80093A50E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		C02115B22BD8B2E80093A50E /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
+		C02115B32BD8B2E80093A50E /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
+		C02115B52BD8B2E80093A50E /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		C02115B62BD8B2E80093A50E /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		C02115B92BD8B2E80093A50E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		C02115BB2BD8B2E80093A50E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C02115BE2BD8B2E80093A50E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		C02115C02BD8B2E80093A50E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C02115C12BD8B2E80093A50E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		C0A1BDFC2BD927EC0097FD72 /* TECameraViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TECameraViewController.h; sourceTree = "<group>"; };
+		C0A1BDFD2BD927EC0097FD72 /* TECameraViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TECameraViewController.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C02115A92BD8B2E80093A50E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				23B33FF21F3F46C595836A02 /* Pods_TEBeautyDemo.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0AAE9F6FADC6E46B72659B07 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				86000F7BA8516769A9531137 /* Pods_TEBeautyDemo.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6E2908C82C2D4B79007C35BE /* resource */ = {
+			isa = PBXGroup;
+			children = (
+				6E2908CA2C2D4B92007C35BE /* RadioButton-Selected.png */,
+				6E2908C92C2D4B92007C35BE /* RadioButton-Unselected.png */,
+			);
+			path = resource;
+			sourceTree = "<group>";
+		};
+		C02115A32BD8B2E80093A50E = {
+			isa = PBXGroup;
+			children = (
+				C02115AE2BD8B2E80093A50E /* TEBeautyDemo */,
+				C02115AD2BD8B2E80093A50E /* Products */,
+				D1493FC140A6E9E33AEAC74F /* Pods */,
+				0AAE9F6FADC6E46B72659B07 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		C02115AD2BD8B2E80093A50E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C02115AC2BD8B2E80093A50E /* TEBeautyDemo.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C02115AE2BD8B2E80093A50E /* TEBeautyDemo */ = {
+			isa = PBXGroup;
+			children = (
+				6E2908C82C2D4B79007C35BE /* resource */,
+				C00F3FCF2BEB5BA7005B18C6 /* 2dMotionRes.bundle */,
+				C00F3FD02BEB5BA7005B18C6 /* 3dMotionRes.bundle */,
+				C00F3FD22BEB5BA7005B18C6 /* lut.bundle */,
+				C00F3FCE2BEB5BA7005B18C6 /* makeupMotionRes.bundle */,
+				C00F3FD12BEB5BA7005B18C6 /* segmentMotionRes.bundle */,
+				C02115AF2BD8B2E80093A50E /* AppDelegate.h */,
+				C02115B02BD8B2E80093A50E /* AppDelegate.m */,
+				C02115B22BD8B2E80093A50E /* SceneDelegate.h */,
+				C02115B32BD8B2E80093A50E /* SceneDelegate.m */,
+				C02115B52BD8B2E80093A50E /* ViewController.h */,
+				C02115B62BD8B2E80093A50E /* ViewController.m */,
+				C0A1BDFC2BD927EC0097FD72 /* TECameraViewController.h */,
+				C0A1BDFD2BD927EC0097FD72 /* TECameraViewController.m */,
+				C02115B82BD8B2E80093A50E /* Main.storyboard */,
+				C02115BB2BD8B2E80093A50E /* Assets.xcassets */,
+				C02115BD2BD8B2E80093A50E /* LaunchScreen.storyboard */,
+				C02115C02BD8B2E80093A50E /* Info.plist */,
+				C02115C12BD8B2E80093A50E /* main.m */,
+				6E2908C52C2C3CFD007C35BE /* RadioButton.h */,
+				6E2908C62C2C3CFD007C35BE /* RadioButton.m */,
+			);
+			path = TEBeautyDemo;
+			sourceTree = "<group>";
+		};
+		D1493FC140A6E9E33AEAC74F /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				ADCC5A7153FB5BDEF17519D2 /* Pods-TEBeautyDemo.debug.xcconfig */,
+				261056C19842FA1C6CFC646B /* Pods-TEBeautyDemo.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C02115AB2BD8B2E80093A50E /* TEBeautyDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C02115C52BD8B2E80093A50E /* Build configuration list for PBXNativeTarget "TEBeautyDemo" */;
+			buildPhases = (
+				AAD8C09B32219FB329BF0AA0 /* [CP] Check Pods Manifest.lock */,
+				C02115A82BD8B2E80093A50E /* Sources */,
+				C02115A92BD8B2E80093A50E /* Frameworks */,
+				C02115AA2BD8B2E80093A50E /* Resources */,
+				4326F2C6333E9E82939C3EF9 /* [CP] Embed Pods Frameworks */,
+				C3BAAF705E0996FCD0AB9365 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TEBeautyDemo;
+			productName = TEBeautyDemo;
+			productReference = C02115AC2BD8B2E80093A50E /* TEBeautyDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C02115A42BD8B2E80093A50E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					C02115AB2BD8B2E80093A50E = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = C02115A72BD8B2E80093A50E /* Build configuration list for PBXProject "TEBeautyDemo" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = C02115A32BD8B2E80093A50E;
+			productRefGroup = C02115AD2BD8B2E80093A50E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C02115AB2BD8B2E80093A50E /* TEBeautyDemo */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C02115AA2BD8B2E80093A50E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6E2908CB2C2D4B92007C35BE /* RadioButton-Unselected.png in Resources */,
+				C00F3FD62BEB5BA7005B18C6 /* segmentMotionRes.bundle in Resources */,
+				C02115BF2BD8B2E80093A50E /* LaunchScreen.storyboard in Resources */,
+				C00F3FD32BEB5BA7005B18C6 /* makeupMotionRes.bundle in Resources */,
+				C00F3FD42BEB5BA7005B18C6 /* 2dMotionRes.bundle in Resources */,
+				C02115BC2BD8B2E80093A50E /* Assets.xcassets in Resources */,
+				C02115BA2BD8B2E80093A50E /* Main.storyboard in Resources */,
+				C00F3FD52BEB5BA7005B18C6 /* 3dMotionRes.bundle in Resources */,
+				6E2908CC2C2D4B92007C35BE /* RadioButton-Selected.png in Resources */,
+				C00F3FD72BEB5BA7005B18C6 /* lut.bundle in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		4326F2C6333E9E82939C3EF9 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TEBeautyDemo/Pods-TEBeautyDemo-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TEBeautyDemo/Pods-TEBeautyDemo-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TEBeautyDemo/Pods-TEBeautyDemo-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AAD8C09B32219FB329BF0AA0 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-TEBeautyDemo-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C3BAAF705E0996FCD0AB9365 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TEBeautyDemo/Pods-TEBeautyDemo-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TEBeautyDemo/Pods-TEBeautyDemo-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TEBeautyDemo/Pods-TEBeautyDemo-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C02115A82BD8B2E80093A50E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C02115B72BD8B2E80093A50E /* ViewController.m in Sources */,
+				C0A1BDFE2BD927EC0097FD72 /* TECameraViewController.m in Sources */,
+				C02115B12BD8B2E80093A50E /* AppDelegate.m in Sources */,
+				C02115C22BD8B2E80093A50E /* main.m in Sources */,
+				C02115B42BD8B2E80093A50E /* SceneDelegate.m in Sources */,
+				6E2908C72C2C3CFD007C35BE /* RadioButton.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		C02115B82BD8B2E80093A50E /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C02115B92BD8B2E80093A50E /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		C02115BD2BD8B2E80093A50E /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C02115BE2BD8B2E80093A50E /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		C02115C32BD8B2E80093A50E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		C02115C42BD8B2E80093A50E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		C02115C62BD8B2E80093A50E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = ADCC5A7153FB5BDEF17519D2 /* Pods-TEBeautyDemo.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 2ZNSKQLPTK;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TEBeautyDemo/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "使用相机";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "使用麦克风";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yunxiao.dev.test;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Yunxiao Develop Profile";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C02115C72BD8B2E80093A50E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 261056C19842FA1C6CFC646B /* Pods-TEBeautyDemo.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 2ZNSKQLPTK;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TEBeautyDemo/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "使用相机";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "使用麦克风";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yunxiao.dev.test;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Yunxiao Develop Profile";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C02115A72BD8B2E80093A50E /* Build configuration list for PBXProject "TEBeautyDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C02115C32BD8B2E80093A50E /* Debug */,
+				C02115C42BD8B2E80093A50E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C02115C52BD8B2E80093A50E /* Build configuration list for PBXNativeTarget "TEBeautyDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C02115C62BD8B2E80093A50E /* Debug */,
+				C02115C72BD8B2E80093A50E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C02115A42BD8B2E80093A50E /* Project object */;
+}

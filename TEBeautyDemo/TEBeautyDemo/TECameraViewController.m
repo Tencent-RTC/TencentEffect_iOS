@@ -11,6 +11,7 @@
 #import "TEUIConfig.h"
 #import "TEBeautyKit.h"
 #import "TEPanelView.h"
+#import "TEDownloader.h"
 
 
 typedef NS_ENUM(NSUInteger, PreviewResolution) {
@@ -74,18 +75,10 @@ typedef NS_ENUM(NSUInteger, PreviewResolution) {
 }
 
 - (void)initBeautyJson {
-    NSString *resourcePath = [[NSBundle mainBundle]
-    pathForResource:@"TEBeautyKitResources" ofType:@"bundle"];
-    NSString *jsonRootPath = [resourcePath stringByAppendingPathComponent:@"json/beauty_panel"];
-    NSString *level = @"S1_07";
-    NSString *levelPath = [jsonRootPath stringByAppendingPathComponent:level];
-    NSString *beautyJsonPath = [levelPath stringByAppendingPathComponent:@"beauty.json"];
-    NSString *bodyJsonPath = [levelPath stringByAppendingPathComponent:@"beauty_body.json"];
-    NSString *lutJsonPath = [levelPath stringByAppendingPathComponent:@"lut.json"];
-    NSString *motionJsonPath = [levelPath stringByAppendingPathComponent:@"motions.json"];
-    NSString *makeupJsonPath = [levelPath stringByAppendingPathComponent:@"makeup.json"];
-    NSString *segJsonPath = [levelPath stringByAppendingPathComponent:@"segmentation.json"];
-    [[TEUIConfig shareInstance] setTEPanelViewRes:beautyJsonPath beautyBody:bodyJsonPath lut:lutJsonPath motion:motionJsonPath makeup:makeupJsonPath segmentation:segJsonPath];
+    [[TEUIConfig shareInstance] setPanelLevel:S1_07];
+    NSString *corePath = [[TEDownloader shardManager].basicPath stringByAppendingPathComponent:@"ModelRes"];
+    //设置美颜模型下载到沙盒中的路径给TEUIConfig
+    [[TEUIConfig shareInstance] setLightCoreBundlePath:corePath];
 }
 
 - (void)initXMagic {
@@ -226,7 +219,7 @@ typedef NS_ENUM(NSUInteger, PreviewResolution) {
 - (void)mycaptureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)inputSampleBuffer fromConnection:(AVCaptureConnection *)connection originImageProcess:(BOOL)originImageProcess
 {
     CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(inputSampleBuffer);
-    YTProcessOutput *output = [self.teBeautyKit processPixelData:pixelBuffer pixelDataWidth:(int)CVPixelBufferGetWidth(pixelBuffer) pixelDataHeight:(int)CVPixelBufferGetHeight(pixelBuffer) withOrigin:YtLightImageOriginTopLeft withOrientation:YtLightCameraRotation0];
+    YTProcessOutput *output = [self.teBeautyKit processPixelData:pixelBuffer  withOrigin:YtLightImageOriginTopLeft withOrientation:YtLightCameraRotation0];
     if (output.pixelData.data != nil) {
         CVPixelBufferRef outPixelBuffer = output.pixelData.data;
         CMSampleBufferRef outSampleBuffer = [self sampleBufferFromPixelBuffer:output.pixelData.data];
