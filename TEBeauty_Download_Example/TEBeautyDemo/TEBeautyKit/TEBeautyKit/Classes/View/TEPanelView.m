@@ -1903,7 +1903,7 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
         [param setValuesForKeysWithDictionary:dic];
         [effectList addObject:param];
     }
-    [self resetBeautyData:_currentUIPropertyList targetData:effectList];
+    [self resetBeautyData:_currentUIPropertyList parentUIProperty:nil targetData:effectList];
     __weak __typeof(self)weakSelf = self;
     dispatch_async(dispatch_get_main_queue(), ^{
         __strong typeof(self) strongSelf = weakSelf;
@@ -1911,19 +1911,43 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
     });
 }
 
-- (void)resetBeautyData:(NSMutableArray<TEUIProperty *>*)uiPropertyList targetData:(NSMutableArray<TESDKParam *>*)targetData{
+- (void)resetBeautyData:(NSMutableArray<TEUIProperty *>*)uiPropertyList parentUIProperty:(TEUIProperty *)parentUIProperty targetData:(NSMutableArray<TESDKParam *>*)targetData{
     if (uiPropertyList.count == 0 || targetData.count == 0) {
         return;
     }
     for (TEUIProperty *uiproperty in uiPropertyList) {
         if (uiproperty.propertyList.count > 0) {
-            [self resetBeautyData:uiproperty.propertyList targetData:targetData];
+            [self resetBeautyData:uiproperty.propertyList parentUIProperty:uiproperty targetData:targetData];
         }else{
             for (TESDKParam *sdkparam in targetData) {
-                if ([sdkparam.effectName isEqualToString:uiproperty.sdkParam.effectName]) {
-                    uiproperty.sdkParam.effectValue = sdkparam.effectValue;
+                if ([self.tePanelDataProvider.exclusionNoneGroup containsObject:uiproperty.sdkParam.effectName]) {
+                    if ([sdkparam.effectName isEqualToString:uiproperty.sdkParam.effectName]
+                        && [sdkparam.resourcePath isEqualToString:uiproperty.sdkParam.resourcePath]) {
+                        uiproperty.sdkParam.effectValue = sdkparam.effectValue;
+                        uiproperty.uiState = TEUIState_IN_USE;
+                        parentUIProperty.uiState = TEUIState_IN_USE;
+                        break;
+                    }else{
+                        uiproperty.uiState = TEUIState_INIT;
+                    }
                 }else{
-                    uiproperty.uiState = TEUIState_INIT;
+                    if (uiproperty.sdkParam.effectName.length > 0) {
+                        if ([sdkparam.effectName isEqualToString:uiproperty.sdkParam.effectName]) {
+                            uiproperty.sdkParam.effectValue = sdkparam.effectValue;
+                            uiproperty.uiState = TEUIState_IN_USE;
+                            break;
+                        }else{
+                            uiproperty.uiState = TEUIState_INIT;
+                        }
+                    }else{
+                        if ([uiproperty.resourceUri.lastPathComponent isEqualToString:sdkparam.resourcePath.lastPathComponent]) {
+                            uiproperty.sdkParam.effectValue = sdkparam.effectValue;
+                            uiproperty.uiState = TEUIState_IN_USE;
+                            break;
+                        }else{
+                            uiproperty.uiState = TEUIState_INIT;
+                        }
+                    }
                 }
             }
         }
