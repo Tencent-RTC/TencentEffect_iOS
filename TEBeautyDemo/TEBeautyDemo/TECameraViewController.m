@@ -76,9 +76,6 @@ typedef NS_ENUM(NSUInteger, PreviewResolution) {
 
 - (void)initBeautyJson {
     [[TEUIConfig shareInstance] setPanelLevel:S1_07];
-    NSString *corePath = [[TEDownloader shardManager].basicPath stringByAppendingPathComponent:@"ModelRes"];
-    //设置美颜模型下载到沙盒中的路径给TEUIConfig
-    [[TEUIConfig shareInstance] setLightCoreBundlePath:corePath];
 }
 
 - (void)initXMagic {
