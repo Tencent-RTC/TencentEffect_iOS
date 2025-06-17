@@ -8,39 +8,52 @@
 #import "TEBeautyKit.h"
 #import <YTCommonXMagic/TELicenseCheck.h>
 #import "View/TEPanelView.h"
-#import "TEUIConfig.h"
 
-static int TEXTUREWIDTH = 720;
-static int TEXTUREHIGHT = 1280;
-
-@interface TEBeautyKit()<YTSDKEventListener, YTSDKLogListener,TEPanelViewDelegate>
-@property (nonatomic, strong)XMagic *xmagicApi;
+@interface TEBeautyKit()<YTSDKEventListener, YTSDKLogListener>
+@property (nonatomic, assign)int  textureWidth;
+@property (nonatomic, assign)int  textureHeight;
 @property (nonatomic, assign)BOOL enableEnhancedMode;
 @property (nonatomic, weak)id<TEBeautyKitAIDataListener> aiDataListener;
 @property (nonatomic, weak)id<TEBeautyKitTipsListener> tipsListener;
-@property (nonatomic, weak)TEPanelView *tePanelView;
-@property (nonatomic, assign)BOOL showOrigin;
+@property (nonatomic, assign)BOOL enableBeauty;
 
 @end
 
 
 @implementation TEBeautyKit
 
++ (void)createXMagic:(EffectMode)effectMode onInitListener:(OnInitListener)onInitListener{
+    NSDictionary *assetsDict = @{@"core_name":@"LightCore.bundle",
+                                 @"root_path":[[NSBundle mainBundle] bundlePath],
+                                 @"effect_mode":@(effectMode)
+    };
+    if(onInitListener != nil){
+        TEBeautyKit * kit = [[TEBeautyKit alloc] init];
+        kit.xmagicApi = [[XMagic alloc] initWithRenderSize:CGSizeMake(720, 1280) assetsDict:assetsDict];
+        onInitListener(kit);
+    }
+    
+}
+
 + (void)create:(OnInitListener _Nullable )onInitListener{
     [self create:NO onInitListener:onInitListener];
 }
 
 + (void)create:(BOOL)isEnableHighPerformance onInitListener:(OnInitListener)onInitListener{
-    NSString *corePath = [[TEUIConfig shareInstance] getLightCoreBundlePath];
-    if (corePath == nil) {
-        corePath = [[NSBundle mainBundle] bundlePath];
+    EffectMode effectMode;
+    if (isEnableHighPerformance) {
+        effectMode = EFFECT_MODE_NORMAL;
+    }else{
+        effectMode = EFFECT_MODE_PRO;
     }
     NSDictionary *assetsDict = @{@"core_name":@"LightCore.bundle",
-                                 @"root_path":corePath,
-                                 @"setDowngradePerformance":@(isEnableHighPerformance)
+                                 @"root_path":[[NSBundle mainBundle] bundlePath],
+                                 @"effect_mode":@(effectMode)
     };
     if(onInitListener != nil){
-        onInitListener([[XMagic alloc] initWithRenderSize:CGSizeMake(TEXTUREWIDTH, TEXTUREHIGHT) assetsDict:assetsDict]);
+        TEBeautyKit * kit = [[TEBeautyKit alloc] init];
+        kit.xmagicApi = [[XMagic alloc] initWithRenderSize:CGSizeMake(720, 1280) assetsDict:assetsDict];
+        onInitListener(kit);
     }
 }
 
@@ -53,28 +66,36 @@ static int TEXTUREHIGHT = 1280;
     }];
 }
 
+-(instancetype)init{
+    self = [super init];
+        if (self) {
+            self.enableBeauty = YES;
+        }
+     return self;
+}
+
 - (void)setXMagicApi:(XMagic *_Nullable)xmagicApi{
     self.xmagicApi = xmagicApi;
 }
 
 - (UIImage *)processUIImage:(UIImage *)inputImage imageWidth:(int)imageWidth imageHeight:(int)imageHeight needReset:(bool)needReset{
-    if(self.showOrigin){
+    if(!self.enableBeauty){
         return inputImage;
     }
-    if(self.xmagicApi != nil && (imageWidth != TEXTUREWIDTH || imageHeight != TEXTUREHIGHT)){
-        TEXTUREWIDTH = imageWidth;
-        TEXTUREHIGHT = imageHeight;
+    if(self.xmagicApi != nil && (imageWidth != self.textureWidth || imageHeight != self.textureHeight)){
+        self.textureWidth = imageWidth;
+        self.textureHeight = imageHeight;
         [self.xmagicApi setRenderSize:CGSizeMake(imageWidth, imageHeight)];
     }
     return [self.xmagicApi processUIImage:inputImage needReset:needReset];
 }
 
-- (YTProcessOutput *)processTexture:(int)textureId
+- (YTProcessOutput *)processTexture:(unsigned int)textureId
          textureWidth:(int)textureWidth
         textureHeight:(int)textureHeight
            withOrigin:(YtLightImageOrigin)origin
       withOrientation:(YtLightDeviceCameraOrientation)orientation{
-    if(self.showOrigin){
+    if(!self.enableBeauty){
         YTProcessOutput *output = [[YTProcessOutput alloc] init];
         output.textureData = [[YTTextureData alloc] init];
         output.textureData.texture = textureId;
@@ -82,9 +103,9 @@ static int TEXTUREHIGHT = 1280;
         output.textureData.textureHeight = textureHeight;
         return output;
     }
-    if(self.xmagicApi != nil && (textureWidth != TEXTUREWIDTH || textureHeight != TEXTUREHIGHT)){
-        TEXTUREWIDTH = textureWidth;
-        TEXTUREHIGHT = textureHeight;
+    if(self.xmagicApi != nil && (textureWidth != self.textureWidth || textureHeight != self.textureHeight)){
+        self.textureWidth = textureWidth;
+        self.textureHeight = textureHeight;
         [self.xmagicApi setRenderSize:CGSizeMake(textureWidth, textureHeight)];
     }
     YTProcessInput *input = [[YTProcessInput alloc] init];
@@ -99,20 +120,20 @@ static int TEXTUREHIGHT = 1280;
 }
 
 - (YTProcessOutput *)processPixelData:(CVPixelBufferRef)pixelData
+                      pixelDataWidth:(int)pixelDataWidth
+                     pixelDataHeight:(int)pixelDataHeight
                           withOrigin:(YtLightImageOrigin)origin
                      withOrientation:(YtLightDeviceCameraOrientation)orientation{
-    if(self.showOrigin){
+    if(!self.enableBeauty){
         YTProcessOutput *output = [[YTProcessOutput alloc] init];
         output.pixelData = [[YTImagePixelData alloc] init];
         output.pixelData.data = pixelData;
         output.dataType = kYTImagePixelData;
         return output;
     }
-    int pixelDataWidth = (int)CVPixelBufferGetWidth(pixelData);
-    int pixelDataHeight = (int)CVPixelBufferGetHeight(pixelData);
-    if(self.xmagicApi != nil && (pixelDataWidth != TEXTUREWIDTH || pixelDataHeight != TEXTUREHIGHT)){
-        TEXTUREWIDTH = pixelDataWidth;
-        TEXTUREHIGHT = pixelDataHeight;
+    if(self.xmagicApi != nil && (pixelDataWidth != self.textureWidth || pixelDataHeight != self.textureHeight)){
+        self.textureWidth = pixelDataWidth;
+        self.textureHeight = pixelDataHeight;
         [self.xmagicApi setRenderSize:CGSizeMake(pixelDataWidth, pixelDataHeight)];
     }
     YTProcessInput *input = [[YTProcessInput alloc] init];
@@ -157,6 +178,9 @@ static int TEXTUREHIGHT = 1280;
 
 - (void)enableEnhancedMode:(BOOL)enable{
     self.enableEnhancedMode = enable;
+    if(_xmagicApi) {
+        [self.xmagicApi enableEnhancedMode];
+    }
     
 }
 
@@ -169,7 +193,10 @@ static int TEXTUREHIGHT = 1280;
 }
 
 - (void)onDestroy{
-    [self.xmagicApi deinit];
+    if(self.xmagicApi){
+        [self.xmagicApi deinit];
+        self.xmagicApi = nil;
+    }
 }
 
 - (void)setLogLevel:(YtSDKLoggerLevel)level{
@@ -182,6 +209,14 @@ static int TEXTUREHIGHT = 1280;
 
 - (void)setFeatureEnableDisable:(NSString *)featureName enable:(BOOL)enable{
     [self.xmagicApi setFeatureEnableDisable:featureName enable:enable];
+}
+
+- (void)setSyncMode:(BOOL)isSync syncFrameCount:(int)syncFrameCount{
+    [self.xmagicApi setSyncMode:isSync syncFrameCount:syncFrameCount];
+}
+
++(DeviceLevel)getDeviceLevel{
+    return [XMagic getDeviceLevel];
 }
 
 - (void)setAIDataListener:(id<TEBeautyKitAIDataListener>)listener{
@@ -206,10 +241,6 @@ static int TEXTUREHIGHT = 1280;
     }
 }
 
-- (void)setTePanelView:(TEPanelView *)tePanelView{
-    _tePanelView = tePanelView;
-    _tePanelView.delegate = self;
-}
 
 
 - (void)saveEffectParam:(TESDKParam *)sdkParam{
@@ -264,8 +295,20 @@ static int TEXTUREHIGHT = 1280;
     NSLog(@"[%ld]-%@", (long)loggerLevel, logInfo);
 }
 
-- (void)showBeautyChanged:(BOOL)open{
-    self.showOrigin = !open;
+- (void)enableBeauty:(BOOL)enable{
+    self.enableBeauty = enable;
 }
+
+- (void) registerSDKEventListener:(id<YTSDKEventListener>)listener {
+    if(self.xmagicApi) {
+        [self.xmagicApi registerSDKEventListener:listener];
+    }
+}
+- (void) clearListeners {
+    if(self.xmagicApi) {
+        [self.xmagicApi clearListeners];
+    }
+}
+
 
 @end

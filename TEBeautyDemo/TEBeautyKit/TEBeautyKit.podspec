@@ -26,7 +26,7 @@ TODO: Add long description of the pod here.
   s.author           = { 'originleeli@tencent.com' => 'originleeli@tencent.com' }
   s.source           = { :git => 'https://github.com/originleeli@tencent.com/TEBeautyKit.git', :tag => s.version.to_s }
 
-  s.ios.deployment_target = '13.0'
+  s.ios.deployment_target = '12.0'
   s.static_framework = true
   s.source_files = ['TEBeautyKit/Classes/**/*.{m,h}','TEBeautyKit/Classes/*.{m,h}']
   

@@ -14,12 +14,13 @@ typedef NS_ENUM(NSUInteger, TEUIState) {
 };
 
 typedef NS_ENUM(NSUInteger, TECategory) {
-    TECategory_BEAUTY = 1,             
-    TECategory_LUT = 2,
-    TECategory_MAKEUP = 3,
-    TECategory_MOTION = 4,
-    TECategory_SEGMENTATION = 5,
-    TECategory_TEMPLATE = 6,
+    TECategory_BEAUTY = 1,             //美颜、美体
+    TECategory_LUT = 2,  //滤镜
+    TECategory_MAKEUP = 3,          //美妆
+    TECategory_MOTION = 4,       //动效
+    TECategory_SEGMENTATION = 5,         //分割
+    TECategory_TEMPLATE = 6,   //美颜模板
+    TECategory_LIGHTMAKEUP = 7, //轻美妆
 };
 
 @interface Param : NSObject
@@ -46,7 +47,7 @@ typedef NS_ENUM(NSUInteger, TECategory) {
 @property(nonatomic,copy)NSString *effectName;
 @property(nonatomic,assign)int effectValue;
 @property(nonatomic,copy)NSString *resourcePath;
-@property(nonatomic,assign)BOOL numericalType; // Is it a numeric type
+@property(nonatomic,assign)BOOL numericalType;//是否是数值型
 @property(nonatomic,strong)ExtraInfo *extraInfo;
 @property(nonatomic,strong)NSDictionary *extraInfoDic;
 
@@ -66,6 +67,7 @@ typedef NS_ENUM(NSUInteger, TECategory) {
 @property(nonatomic,strong)NSMutableArray<TEUIProperty *> *propertyList;
 @property(nonatomic,strong)TESDKParam *sdkParam;
 @property(nonatomic,assign)TECategory teCategory;
+@property(nonatomic,assign)NSString *uiCategory;
 @property(nonatomic,strong)NSMutableArray<Param *> *paramList;
 
 @property(nonatomic,assign)BOOL isSelected;
@@ -74,7 +76,9 @@ typedef NS_ENUM(NSUInteger, TECategory) {
 @property(nonatomic,copy)NSString *labelEn;
 @property(nonatomic,copy)NSString *Id;
 @property(nonatomic,copy)NSString *parentId;
+@property(nonatomic,assign)BOOL isShowGridLayout;
 
 - (instancetype)initWithDict:(NSDictionary *)dict;
+- (NSDictionary *)toDictionary;
 
 @end

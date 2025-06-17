@@ -6,7 +6,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "TEUIProperty.h"
+#import "../Model/TEUIProperty.h"
 
 @interface TECollectionViewCell : UICollectionViewCell
 

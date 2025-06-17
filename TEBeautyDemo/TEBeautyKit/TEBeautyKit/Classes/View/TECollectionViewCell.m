@@ -60,15 +60,6 @@
         self.pointView.hidden = YES;
         self.coverView.backgroundColor = [UIColor clearColor];
     }
-    if(teUIProperty.propertyList.count == 0 && teUIProperty.sdkParam == nil){
-        if(teUIProperty.paramList.count > 0){
-            self.line.hidden = YES;
-        }else{
-            self.line.hidden = NO;
-        }
-    }else{
-        self.line.hidden = YES;
-    }
     if([self isItemInUse:teUIProperty]){
         self.pointView.hidden = NO;
         self.coverView.backgroundColor = [UIColor clearColor];
@@ -94,50 +85,38 @@
     }
 }
 
--(void)initUI{
+-(void)initUI {
     self.coverView = [[UIView alloc] init];
-    self.coverView.layer.cornerRadius = 8;
+    self.coverView.layer.cornerRadius = 6;
     self.coverView.backgroundColor = [UIColor clearColor];
     [self.contentView addSubview:self.coverView];
     [self.coverView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo(50);
-        make.height.mas_equalTo(78);
+        make.width.mas_equalTo(62);
+        make.height.mas_equalTo(85);
         make.centerX.mas_equalTo(self.contentView);
         make.top.mas_equalTo(self.contentView);
     }];
     
     self.image = [[UIImageView alloc] init];
-    self.image.layer.cornerRadius = 8;
+    self.image.layer.cornerRadius = 6;
     [self.contentView addSubview:self.image];
     [self.image mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.height.mas_equalTo(48);
+        make.width.height.mas_equalTo(56);
         make.centerX.mas_equalTo(self.coverView.mas_centerX);
-        make.top.mas_equalTo(self.coverView.mas_top).mas_offset(1);
+        make.top.mas_equalTo(self.coverView.mas_top).mas_offset(2);
     }];
     
-    self.line = [[UIView alloc] init];
-    self.line.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.15];
-    [self.contentView addSubview:self.line];
-    [self.line mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo(1);
-        make.height.mas_equalTo(23);
-        make.centerY.mas_equalTo(self.image.mas_centerY);
-        make.right.mas_equalTo(self.contentView);
-    }];
-    self.line.hidden = YES;
-
     self.label = [[UILabel alloc] init];
     self.label.textAlignment = NSTextAlignmentCenter;
-    self.label.numberOfLines = 2;
-    self.label.lineBreakMode = NSLineBreakByWordWrapping;
-    [self.label setFont:[UIFont fontWithName:@"PingFangSC-Semibold" size:[TEUtils isCurrentLanguageHans] ? 10 : 8.5]];
+    self.label.numberOfLines = 1;
+    self.label.lineBreakMode = NSLineBreakByTruncatingTail;
+    [self.label setFont:[UIFont fontWithName:@"PingFangSC-Semibold" size:[TEUtils isCurrentLanguageHans] ? 12 : 8.5]];
     [self.coverView addSubview:self.label];
     [self.label setTextColor:[TEUIConfig shareInstance].textColor];
     [self.label mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(self.coverView);
         make.left.mas_equalTo(self.coverView.mas_left);
-//        make.height.mas_equalTo()
-        make.top.mas_equalTo(self.image.mas_bottom).mas_offset(3);
+        make.top.mas_equalTo(self.image.mas_bottom).mas_offset(5);
     }];
 
     self.pointView = [[UIView alloc] init];
@@ -150,22 +129,20 @@
         make.top.mas_equalTo(self.label.mas_bottom);
     }];
     self.pointView.hidden = YES;
+    [self.contentView layoutIfNeeded];
+     CGRect imageFrame = [self.image convertRect:self.image.bounds toView:self.coverView];
 
-    // 创建一个圆角矩形路径
-    UIBezierPath *roundedRectPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0, 50, 78) cornerRadius:8];
+     UIBezierPath *roundedRectPath = [UIBezierPath bezierPathWithRoundedRect:self.coverView.bounds cornerRadius:10];
 
-    // 创建一个矩形路径作为透明洞
-    UIBezierPath *holePath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(1, 1, 48, 48) cornerRadius:8];
+     UIBezierPath *holePath = [UIBezierPath bezierPathWithRoundedRect:imageFrame cornerRadius:10];
 
-    // 将两个路径组合在一起
-    [roundedRectPath appendPath:holePath];
-    roundedRectPath.usesEvenOddFillRule = YES;
+     [roundedRectPath appendPath:holePath];
+     roundedRectPath.usesEvenOddFillRule = YES;
 
-    // 使用CAShapeLayer设置coverView的遮罩
-    CAShapeLayer *maskLayer = [CAShapeLayer layer];
-    maskLayer.path = roundedRectPath.CGPath;
-    maskLayer.fillRule = kCAFillRuleEvenOdd;
-    self.coverView.layer.mask = maskLayer;
+     CAShapeLayer *maskLayer = [CAShapeLayer layer];
+     maskLayer.path = roundedRectPath.CGPath;
+     maskLayer.fillRule = kCAFillRuleEvenOdd;
+     self.coverView.layer.mask = maskLayer;
 }
 
 @end

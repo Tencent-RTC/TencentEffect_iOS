@@ -6,9 +6,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "TEUIProperty.h"
+#import "../Model/TEUIProperty.h"
 
-//demo_ability_menu abilityType
+//demo_ability_menu的abilityType字段
 #define BEAUTY_TEMPLATE          @"BEAUTY_TEMPLATE"
 #define BEAUTY                   @"BEAUTY"
 #define BEAUTY_BASIC             @"BEAUTY_BASIC"
@@ -17,7 +17,9 @@
 #define BEAUTY_IMAGE             @"BEAUTY_IMAGE"
 #define LUT                      @"LUT"
 #define BEAUTY_MAKEUP            @"BEAUTY_MAKEUP"
+#define LIGHT_MAKEUP             @"LIGHT_MAKEUP"
 #define MAKEUP                   @"MAKEUP"
+#define LIGHT_MOTION             @"LIGHT_MOTION"
 #define MOTION_2D                @"MOTION_2D"
 #define MOTION_3D                @"MOTION_3D"
 #define MOTION_GESTURE           @"MOTION_GESTURE"
@@ -31,6 +33,7 @@
 
 @interface TEPanelDataProvider : NSObject
 
+//单点能力-用来设置美颜组合的顺序
 @property (nonatomic ,strong) NSMutableArray<NSString *> *abilitiesBeautyArray;
 @property (nonatomic ,strong) NSMutableArray<NSString *> *abilitiesMakeupArray;
 @property (nonatomic ,strong) NSMutableArray<NSString *> *abilitiesMotionArray;
@@ -45,44 +48,66 @@
 //美颜互斥组合
 @property (nonatomic ,strong) NSArray<NSString *> *exclusionGroup ;
 @property (nonatomic ,strong) NSArray<NSString *> *exclusionNoneGroup ;
-
-
+//增强模式倍率
 @property (nonatomic ,strong) NSMutableDictionary *enhancedMultipleDictionary ;
 
 + (instancetype)shareInstance;
 
-// Obtain the beauty data configured by TEUIConfig
+//获取TEUIConfig配置的美颜数据
 -(TEUIProperty *)getBeautyPanelData;
-// Obtain the beautyBody data configured by TEUIConfig
+//获取TEUIConfig配置的美体数据
 -(TEUIProperty *)getBeautyBodyPanelData;
-// Obtain the lut data configured by TEUIConfig
+//获取TEUIConfig配置的滤镜数据
 -(TEUIProperty *)getLutPanelData;
-// Obtain the motion data configured by TEUIConfig
+//获取TEUIConfig配置的动效数据
 -(TEUIProperty *)getMotionPanelData;
-// Obtain the makeup data configured by TEUIConfig
+//获取TEUIConfig配置的美妆数据
 -(TEUIProperty *)getMakeupPanelData;
-// Obtain the Segmentation data configured by TEUIConfig
+//获取TEUIConfig配置的背景分割数据
 -(TEUIProperty *)getSegmentationPanelData;
 
 -(NSMutableArray<TEUIProperty *>*)getAllPanelData;
 
+
+//基础美颜
 -(TEUIProperty *)getBeautyBaseShapeData;
+//美体
 -(TEUIProperty *)getBeautyBodyData;
+//通用美颜
 -(TEUIProperty *)getBeautyGeneralShapeData;
+//画质调整
 -(TEUIProperty *)getBeautyImageData;
+//单点美妆
 -(TEUIProperty *)getBeautyMakeupData;
+//高级美型
 -(TEUIProperty *)getBeautyShapeData;
+//美颜模板
 -(TEUIProperty *)getBeautyTemplateData;
+//美颜
 -(TEUIProperty *)getBeautyData;
+//原子能力
 -(NSMutableArray<TEUIProperty *> *)getCapabilitiesListData;
+//滤镜
 -(TEUIProperty *)getLutData;
+//美妆
 -(TEUIProperty *)getMakeupData;
+//轻美妆
+-(TEUIProperty *)getLightMakeupData;
+//轻贴纸
+-(TEUIProperty *)getLightMotionData;
+//2D动效
 -(TEUIProperty *)getMotion2dData;
+//3D动效
 -(TEUIProperty *)getMotion3dData;
+//手势动效
 -(TEUIProperty *)getMotionGestureData;
+//运镜动效
 -(TEUIProperty *)getMotionCameraMoveData;
+//背景分割
 -(TEUIProperty *)getPortraitSegmentationData;
+//背景分割
 -(TEUIProperty *)getSegmentationData;
+//根据套餐获取美颜组合
 - (NSMutableArray<TEUIProperty *> *)getAbilitiesBeautyData:(NSString *)comboType;
 
 - (NSMutableArray<TEUIProperty *> *)getAbilitiesMakeupData:(NSString *)comboType;
@@ -92,8 +117,11 @@
 - (NSMutableArray<TEUIProperty *> *)getAbilitiesTemplateData:(NSString *)comboType;
 
 - (NSMutableArray<TEUIProperty *> *)getAbilitiesTemplateBeautyData;
+//设置美颜增强属性
 - (void)setEnhancedMultiple:(NSMutableDictionary *)enhancedMultiple;
+//清空数据
 - (void)clearData;
+//清空动效和滤镜
 - (void)clearMotionLutData;
 
 @end

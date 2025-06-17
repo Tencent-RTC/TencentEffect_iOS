@@ -29,7 +29,7 @@ typedef NS_ENUM(NSUInteger, PreviewResolution) {
 @property (nonatomic, strong) AVCaptureVideoDataOutput *videoDataOutput;
 @property (nonatomic,strong) AVSampleBufferDisplayLayer *previewLayer;
 
-@property (nonatomic, strong) XMagic *xMagicKit;
+ 
 @property (nonatomic, strong) TEBeautyKit *teBeautyKit;
 @property (nonatomic, strong) TEPanelView *tePanelView;
 
@@ -58,11 +58,23 @@ typedef NS_ENUM(NSUInteger, PreviewResolution) {
     self.previewLayer.frame = self.view.bounds;
     
     [self.view addSubview:self.tePanelView];
+    UIEdgeInsets gSafeInset;
+#if __IPHONE_11_0 && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_11_0
+    if(gSafeInset.bottom > 0){
+    }
+    if (@available(iOS 11.0, *)) {
+        gSafeInset = self.view.safeAreaInsets;
+    } else
+#endif
+    {
+        gSafeInset = UIEdgeInsetsZero;
+    }
+    [self.view addSubview:self.tePanelView];
     [self.tePanelView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(self.view);
-        make.centerX.mas_equalTo(self.view);
+        make.left.right.mas_equalTo(self.view);
         make.height.mas_equalTo(250);
-        make.bottom.mas_equalTo(self.view.mas_bottom);
+        make.bottom.mas_equalTo(self.view.mas_safeAreaLayoutGuideBottom);
     }];
 }
 
@@ -75,29 +87,40 @@ typedef NS_ENUM(NSUInteger, PreviewResolution) {
 }
 
 - (void)initBeautyJson {
-    [[TEUIConfig shareInstance] setPanelLevel:S1_07];
+    
+//    NSString *resourcePath = [[NSBundle mainBundle]
+//    pathForResource:@"TEBeautyKitResources" ofType:@"bundle"];
+//    NSString *level = @"S1_07";
+//
+//
+//
+//    NSString *levelPath = [resourcePath stringByAppendingPathComponent:level];
+//
+//    NSString *beautyJsonPath = [levelPath stringByAppendingPathComponent:@"beauty.json"];
+//    NSString *bodyJsonPath = [levelPath stringByAppendingPathComponent:@"beauty_body.json"];
+//    NSString *lutJsonPath = [levelPath stringByAppendingPathComponent:@"lut.json"];
+//    NSString *motionJsonPath = [levelPath stringByAppendingPathComponent:@"motions.json"];
+////    NSString *makeupJsonPath = [levelPath stringByAppendingPathComponent:@"makeup.json"];
+//    NSString *lightMakeupJsonPath = [levelPath stringByAppendingPathComponent:@"light_makeup.json"];
+//    NSString *segJsonPath = [levelPath stringByAppendingPathComponent:@"segmentation.json"];
+//
+//    [[TEUIConfig shareInstance] setTEPanelViewRes:beautyJsonPath beautyBody:bodyJsonPath lut:lutJsonPath motion:motionJsonPath makeup:nil segmentation:segJsonPath lightMakeup:lightMakeupJsonPath];
+    [[TEUIConfig shareInstance] setPanelLevel:S1_07]; // 配置面板显示级别
 }
 
 - (void)initXMagic {
     __weak __typeof(self)weakSelf = self;
-    [TEBeautyKit create:^(XMagic * _Nullable api) {
+    [TEBeautyKit create:^(TEBeautyKit * _Nullable api) {
         __strong typeof(self) strongSelf = weakSelf;
-        strongSelf.xMagicKit = api;
-        [strongSelf.teBeautyKit setXMagicApi:api];
+        strongSelf.teBeautyKit = api;
         strongSelf.tePanelView.teBeautyKit = strongSelf.teBeautyKit;
-        [strongSelf.teBeautyKit setTePanelView:strongSelf.tePanelView];
+        [strongSelf.tePanelView setDefaultBeauty];
         [strongSelf.teBeautyKit setLogLevel:YT_SDK_ERROR_LEVEL];
-        strongSelf.tePanelView.beautyKitApi = api;
-        [strongSelf.xMagicKit registerSDKEventListener:strongSelf];
+        [strongSelf.teBeautyKit registerSDKEventListener:strongSelf];
     }];
 }
 
-- (TEBeautyKit *)teBeautyKit {
-    if (!_teBeautyKit) {
-        _teBeautyKit= [[TEBeautyKit alloc] init];
-    }
-    return _teBeautyKit;
-}
+ 
 
 #pragma mark - cramera
 - (void)buildCamra
@@ -216,7 +239,7 @@ typedef NS_ENUM(NSUInteger, PreviewResolution) {
 - (void)mycaptureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)inputSampleBuffer fromConnection:(AVCaptureConnection *)connection originImageProcess:(BOOL)originImageProcess
 {
     CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(inputSampleBuffer);
-    YTProcessOutput *output = [self.teBeautyKit processPixelData:pixelBuffer  withOrigin:YtLightImageOriginTopLeft withOrientation:YtLightCameraRotation0];
+    YTProcessOutput *output = [self.teBeautyKit processPixelData:pixelBuffer pixelDataWidth:CVPixelBufferGetWidth(pixelBuffer) pixelDataHeight:CVPixelBufferGetHeight(pixelBuffer)  withOrigin:YtLightImageOriginTopLeft withOrientation:YtLightCameraRotation0];
     if (output.pixelData.data != nil) {
         CVPixelBufferRef outPixelBuffer = output.pixelData.data;
         CMSampleBufferRef outSampleBuffer = [self sampleBufferFromPixelBuffer:output.pixelData.data];
@@ -254,4 +277,19 @@ typedef NS_ENUM(NSUInteger, PreviewResolution) {
     return outputSampleBuffer;
 }
 
+- (void)showBeautyChanged:(BOOL)open{
+    [self.teBeautyKit enableBeauty:open];
+}
+
+//- (void) onResetBtnClick{
+//    NSLog(@"打印日志 onResetBtnClick");
+//    [_tePanelView performFullReset];
+//}
+//- (void) onCustomSegBtnClick{
+//    NSLog(@"打印日志 onCustomSegBtnClick");
+//
+//}
+//- (void) onGreenscreenItemClick{
+//    NSLog(@"打印日志 onGreenscreenItemClick");
+//}
 @end

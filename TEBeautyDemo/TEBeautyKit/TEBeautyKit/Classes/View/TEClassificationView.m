@@ -36,12 +36,10 @@
 -(void)initWithName:(NSString *)name image:(UIImage *)image{
     self.roundView = [[UIView alloc] init];
     self.roundView.frame = CGRectMake(0, 0, 48, 48);
-    self.roundView.backgroundColor = [UIColor whiteColor];
+    self.roundView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3];
     self.roundView.layer.cornerRadius = 24;
     self.roundView.clipsToBounds = YES;
     self.imageView = [[UIImageView alloc] init];
-    image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    [self.imageView setTintColor:[UIColor colorWithRed:0 green:0x6e/255.0 blue:1 alpha:1]];
     [self.imageView setImage:image];
     [self.roundView addSubview:self.imageView];
     [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -67,10 +65,11 @@
 - (void)setEnable:(BOOL)enable{
     _enable = enable;
     if(enable){
-        self.roundView.backgroundColor = [UIColor whiteColor];
+        self.roundView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3];
         self.label.textColor = [UIColor whiteColor];
     }else{
-        self.roundView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.5];
+        self.roundView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.15];
+        self.imageView.alpha = 0.3;
         self.label.textColor = [UIColor colorWithWhite:1 alpha:0.5];
     }
 }

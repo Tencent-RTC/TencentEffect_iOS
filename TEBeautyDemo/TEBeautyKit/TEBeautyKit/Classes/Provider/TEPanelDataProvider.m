@@ -26,6 +26,8 @@
 @property (nonatomic ,strong) TEUIProperty *makeupPanelData;
 //背景分割数据
 @property (nonatomic ,strong) TEUIProperty *segmentationPanelData;
+//轻美妆
+@property (nonatomic ,strong) TEUIProperty *lightMakeupPanelData;
 
 
 
@@ -51,6 +53,10 @@
 @property (nonatomic ,strong) TEUIProperty *lutData;
 //美妆
 @property (nonatomic ,strong) TEUIProperty *makeupData;
+//轻美妆
+@property (nonatomic ,strong) TEUIProperty *lightMakeupData;
+//轻贴纸
+@property (nonatomic ,strong) TEUIProperty *lightMotionData;
 //2D动效
 @property (nonatomic ,strong) TEUIProperty *motion2dData;
 //3D动效
@@ -95,6 +101,9 @@
 - (TEUIProperty *)getBeautyPanelData{
     if(!_beautyPanelData){
         NSDictionary *dic = [self readLocalFileWithPath:[[TEUIConfig shareInstance] getBeautyPath]];
+        if (dic == nil) {
+            return nil;
+        }
         TEUIProperty *uiproperty = [TEUIProperty new];
         [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_BEAUTY;
@@ -106,6 +115,9 @@
 - (TEUIProperty *)getBeautyBodyPanelData{
     if(!_beautyBodyPanelData){
         NSDictionary *dic = [self readLocalFileWithPath:[[TEUIConfig shareInstance] getBeautyBodyPath]];
+        if (dic == nil) {
+            return nil;
+        }
         TEUIProperty *uiproperty = [TEUIProperty new];
         [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_BEAUTY;
@@ -117,6 +129,9 @@
 - (TEUIProperty *)getLutPanelData{
     if(!_lutPanelData){
         NSDictionary *dic = [self readLocalFileWithPath:[[TEUIConfig shareInstance] getLutPath]];
+        if (dic == nil) {
+            return nil;
+        }
         TEUIProperty *uiproperty = [TEUIProperty new];
         [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_LUT;
@@ -128,6 +143,9 @@
 - (TEUIProperty *)getMotionPanelData{
     if(!_motionPanelData){
         NSDictionary *dic = [self readLocalFileWithPath:[[TEUIConfig shareInstance] getMotionPath]];
+        if (dic == nil) {
+            return nil;
+        }
         TEUIProperty *uiproperty = [TEUIProperty new];
         [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_MOTION;
@@ -142,6 +160,9 @@
 - (TEUIProperty *)getMakeupPanelData{
     if(!_makeupPanelData){
         NSDictionary *dic = [self readLocalFileWithPath:[[TEUIConfig shareInstance] getMakeupPath]];
+        if (dic == nil) {
+            return nil;
+        }
         TEUIProperty *uiproperty = [TEUIProperty new];
         [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_MAKEUP;
@@ -150,9 +171,26 @@
     return _makeupPanelData;
 }
 
+- (TEUIProperty *)getLightMakeupPanelData{
+    if(!_lightMakeupPanelData){
+        NSDictionary *dic = [self readLocalFileWithPath:[[TEUIConfig shareInstance] getLightMakeupPath]];
+        if (dic == nil) {
+            return nil;
+        }
+        TEUIProperty *uiproperty = [TEUIProperty new];
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        uiproperty.teCategory = TECategory_LIGHTMAKEUP;
+        _lightMakeupPanelData = uiproperty;
+    }
+    return _lightMakeupPanelData;
+}
+
 - (TEUIProperty *)getSegmentationPanelData{
     if(!_segmentationPanelData){
         NSDictionary *dic = [self readLocalFileWithPath:[[TEUIConfig shareInstance] getSegmentationPath]];
+        if (dic == nil) {
+            return nil;
+        }
         TEUIProperty *uiproperty = [TEUIProperty new];
         [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_SEGMENTATION;
@@ -177,6 +215,9 @@
     }
     if([self getMakeupPanelData] != nil){
         [allPanelData addObject:_makeupPanelData];
+    }
+    if([self getLightMakeupPanelData] != nil){
+        [allPanelData addObject:_lightMakeupPanelData];
     }
     if([self getSegmentationPanelData] != nil){
         [allPanelData addObject:_segmentationPanelData];
@@ -296,9 +337,34 @@
         TEUIProperty *uiproperty = [TEUIProperty new];
         [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_MAKEUP;
+        uiproperty.abilityType = @"MAKEUP";
         _makeupData = uiproperty;
     }
     return _makeupData;
+}
+
+- (TEUIProperty *)getLightMakeupData{
+    if (!_lightMakeupData) {
+        NSDictionary *dic = [self readLocalFileWithName:@"light_makeup"];
+        TEUIProperty *uiproperty = [TEUIProperty new];
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        uiproperty.teCategory = TECategory_LIGHTMAKEUP;
+        uiproperty.abilityType = @"LIGHT_MAKEUP";
+        _lightMakeupData = uiproperty;
+    }
+    return _lightMakeupData;
+}
+
+- (TEUIProperty *)getLightMotionData{
+    if (!_lightMotionData) {
+        NSDictionary *dic = [self readLocalFileWithName:@"light_motion"];
+        TEUIProperty *uiproperty = [TEUIProperty new];
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        uiproperty.teCategory = TECategory_MOTION;
+        uiproperty.abilityType = @"LIGHT_MOTION";
+        _lightMotionData = uiproperty;
+    }
+    return _lightMotionData;
 }
 
 - (TEUIProperty *)getMotion2dData{
@@ -307,6 +373,7 @@
         TEUIProperty *uiproperty = [TEUIProperty new];
         [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_MOTION;
+        uiproperty.abilityType = @"MOTION_2D";
         _motion2dData = uiproperty;
     }
     return _motion2dData;
@@ -318,6 +385,7 @@
         TEUIProperty *uiproperty = [TEUIProperty new];
         [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_MOTION;
+        uiproperty.abilityType = @"MOTION_3D";
         _motion3dData = uiproperty;
     }
     return _motion3dData;
@@ -329,6 +397,7 @@
         TEUIProperty *uiproperty = [TEUIProperty new];
         [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_MOTION;
+        uiproperty.abilityType = @"MOTION_GESTURE";
         _motionGestureData = uiproperty;
     }
     return _motionGestureData;
@@ -340,6 +409,7 @@
         TEUIProperty *uiproperty = [TEUIProperty new];
         [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_MOTION;
+        uiproperty.abilityType = @"MOTION_CAMERA_MOVE";
         _motionCameraMoveData = uiproperty;
     }
     return _motionCameraMoveData;
@@ -351,6 +421,7 @@
         TEUIProperty *uiproperty = [TEUIProperty new];
         [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_SEGMENTATION;
+        uiproperty.abilityType = @"SEGMENTATION";
         _portraitSegmentationData = uiproperty;
     }
     return _portraitSegmentationData;
@@ -362,6 +433,7 @@
         TEUIProperty *uiproperty = [TEUIProperty new];
         [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_SEGMENTATION;
+        uiproperty.abilityType = @"SEGMENTATION";
         _segmentationData = uiproperty;
     }
     return _segmentationData;
@@ -446,70 +518,54 @@
         [self.abilitiesBeautyArray addObject:BEAUTY];
     }else if ([comboType isEqualToString:@"A1-01"] ||
               [comboType isEqualToString:@"A1-02"] ||
-              [comboType isEqualToString:@"A1-04"] ||
               [comboType isEqualToString:@"A1-05"] ||
               [comboType isEqualToString:@"A1-06"]){
-        [array addObject:self.beautyData];
-        [array addObject:self.beautyImageData];
-        [array addObject:self.beautyBaseShapeData];
-        [self.abilitiesBeautyArray addObject:BEAUTY];
-        [self.abilitiesBeautyArray addObject:BEAUTY_IMAGE];
-        [self.abilitiesBeautyArray addObject:BEAUTY_BASIC];
-    }else if ([comboType isEqualToString:@"A1-03"]){
-        [array addObject:self.beautyData];
-        [array addObject:self.beautyImageData];
-        [array addObject:self.beautyGeneralShapeData];
-        [self.abilitiesBeautyArray addObject:BEAUTY];
-        [self.abilitiesBeautyArray addObject:BEAUTY_IMAGE];
-        [self.abilitiesBeautyArray addObject:BEAUTY_GENERAL];
+        [array addObjectsFromArray:@[self.beautyData,self.beautyImageData,self.beautyBaseShapeData]];
+        [self.abilitiesBeautyArray addObjectsFromArray:@[BEAUTY,BEAUTY_IMAGE,BEAUTY_BASIC]];
+    }else if ([comboType isEqualToString:@"A1-03"] ||
+              [comboType isEqualToString:@"A1-04"]){
+        [array addObjectsFromArray:@[self.beautyData,self.beautyImageData,self.beautyGeneralShapeData]];
+        [self.abilitiesBeautyArray addObjectsFromArray:@[BEAUTY,BEAUTY_IMAGE,BEAUTY_GENERAL]];
     }else if ([comboType isEqualToString:@"S1-00"] ||
               [comboType isEqualToString:@"S1-01"] ||
               [comboType isEqualToString:@"S1-02"] ||
               [comboType isEqualToString:@"S1-03"] ||
               [comboType isEqualToString:@"S1-04"]){
-        [array addObject:self.beautyData];
-        [array addObject:self.beautyImageData];
-        [array addObject:self.beautyShapeData];
-        [self.abilitiesBeautyArray addObject:BEAUTY];
-        [self.abilitiesBeautyArray addObject:BEAUTY_IMAGE];
-        [self.abilitiesBeautyArray addObject:BEAUTY_SHAPE];
+        [array addObjectsFromArray:@[self.beautyData,self.beautyImageData,self.beautyShapeData]];
+        [self.abilitiesBeautyArray addObjectsFromArray:@[BEAUTY,BEAUTY_IMAGE,BEAUTY_SHAPE]];
     }else{
-        [array addObject:self.beautyData];
-        [array addObject:self.beautyImageData];
-        [array addObject:self.beautyShapeData];
-        [array addObject:self.beautyBodyData];
-        [self.abilitiesBeautyArray addObject:BEAUTY];
-        [self.abilitiesBeautyArray addObject:BEAUTY_IMAGE];
-        [self.abilitiesBeautyArray addObject:BEAUTY_SHAPE];
-        [self.abilitiesBeautyArray addObject:BEAUTY_BODY];
+        [array addObjectsFromArray:@[self.beautyData,self.beautyImageData,self.beautyShapeData,self.beautyBodyData]];
+        [self.abilitiesBeautyArray addObjectsFromArray:@[BEAUTY,BEAUTY_IMAGE,BEAUTY_SHAPE,BEAUTY_BODY]];
     }
     return array;
 }
 
 - (NSMutableArray<TEUIProperty *> *)getAbilitiesMakeupData:(NSString *)comboType{
     [self getBeautyMakeupData];
-    [self getMakeupData];
+    [self getLightMakeupData];
     NSMutableArray<TEUIProperty *> *array = [NSMutableArray array];
     self.abilitiesMakeupArray = [NSMutableArray array];
     if([comboType isEqualToString:@"A1-06"]){
-        [array addObject:self.makeupData];
-        [self.abilitiesMakeupArray addObject:BEAUTY_MAKEUP];
+        [array addObject:self.lightMakeupData];
+        [self.abilitiesMakeupArray addObject:LIGHT_MAKEUP];
     }else if ([comboType isEqualToString:@"S1-00"]){
         [array addObject:self.beautyMakeupData];
         [self.abilitiesMakeupArray addObject:BEAUTY_MAKEUP];
     }else{
         [array addObject:self.beautyMakeupData];
-        [array addObject:self.makeupData];
+        [array addObject:self.lightMakeupData];
         [self.abilitiesMakeupArray addObject:BEAUTY_MAKEUP];
-        [self.abilitiesMakeupArray addObject:MAKEUP];
+        [self.abilitiesMakeupArray addObject:LIGHT_MAKEUP];
     }
     return array;
 }
 
 - (NSMutableArray<TEUIProperty *> *)getAbilitiesMotionData:(NSString *)comboType{
     [self clearMotionLutData];
+    [self getLightMotionData];
     [self getMotion2dData];
     [self getMotion3dData];
+    [self getMakeupData];
     [self getMotionGestureData];
     [self getSegmentationData];
     [self getMotionCameraMoveData];
@@ -518,55 +574,25 @@
     
     if([comboType isEqualToString:@"A1-02"] ||
        [comboType isEqualToString:@"A1-03"]){
-        [array addObject:self.motion2dData];
-        [array addObject:self.motionCameraMoveData];
-        [self.abilitiesMotionArray addObject:MOTION_2D];
-        [self.abilitiesMotionArray addObject:MOTION_CAMERA_MOVE];
+        [array addObjectsFromArray:@[self.lightMotionData,self.motion2dData,self.motionCameraMoveData]];
+        [self.abilitiesMotionArray addObjectsFromArray:@[LIGHT_MOTION,MOTION_2D,MOTION_CAMERA_MOVE]];
     }else if([comboType isEqualToString:@"A1-04"]){
-        [array addObject:self.motion2dData];
-        [array addObject:self.motionGestureData];
-        [array addObject:self.motionCameraMoveData];
-        [self.abilitiesMotionArray addObject:MOTION_2D];
-        [self.abilitiesMotionArray addObject:MOTION_GESTURE];
-        [self.abilitiesMotionArray addObject:MOTION_CAMERA_MOVE];
+        [array addObjectsFromArray:@[self.lightMotionData,self.motion2dData,self.motionGestureData,self.motionCameraMoveData]];
+        [self.abilitiesMotionArray addObjectsFromArray:@[LIGHT_MOTION,MOTION_2D,MOTION_GESTURE,MOTION_CAMERA_MOVE]];
     }else if([comboType isEqualToString:@"A1-05"] ||
              [comboType isEqualToString:@"S1-03"]){
-        [array addObject:self.motion2dData];
-        [array addObject:self.motion3dData];
-        [array addObject:self.segmentationData];
-        [array addObject:self.motionCameraMoveData];
-        [self.abilitiesMotionArray addObject:MOTION_2D];
-        [self.abilitiesMotionArray addObject:MOTION_3D];
-        [self.abilitiesMotionArray addObject:SEGMENTATION];
-        [self.abilitiesMotionArray addObject:MOTION_CAMERA_MOVE];
+        [array addObjectsFromArray:@[self.lightMotionData,self.motion2dData,self.motion3dData,self.segmentationData,self.motionCameraMoveData]];
+        [self.abilitiesMotionArray addObjectsFromArray:@[LIGHT_MOTION,MOTION_2D,MOTION_3D,SEGMENTATION,MOTION_CAMERA_MOVE]];
     }else if([comboType isEqualToString:@"A1-06"] ||
              [comboType isEqualToString:@"S1-01"]){
-        [array addObject:self.motion2dData];
-        [array addObject:self.motion3dData];
-        [array addObject:self.motionCameraMoveData];
-        [self.abilitiesMotionArray addObject:MOTION_2D];
-        [self.abilitiesMotionArray addObject:MOTION_3D];
-        [self.abilitiesMotionArray addObject:MOTION_CAMERA_MOVE];
+        [array addObjectsFromArray:@[self.lightMotionData,self.motion2dData,self.motion3dData,self.makeupData,self.motionCameraMoveData]];
+        [self.abilitiesMotionArray addObjectsFromArray:@[LIGHT_MOTION,MOTION_2D,MOTION_3D,MAKEUP,MOTION_CAMERA_MOVE]];
     }else if ([comboType isEqualToString:@"S1-02"]){
-        [array addObject:self.motion2dData];
-        [array addObject:self.motion3dData];
-        [array addObject:self.motionGestureData];
-        [array addObject:self.motionCameraMoveData];
-        [self.abilitiesMotionArray addObject:MOTION_2D];
-        [self.abilitiesMotionArray addObject:MOTION_3D];
-        [self.abilitiesMotionArray addObject:MOTION_GESTURE];
-        [self.abilitiesMotionArray addObject:MOTION_CAMERA_MOVE];
+        [array addObjectsFromArray:@[self.lightMotionData,self.motion2dData,self.motion3dData,self.makeupData,self.motionGestureData,self.motionCameraMoveData]];
+        [self.abilitiesMotionArray addObjectsFromArray:@[LIGHT_MOTION,MOTION_2D,MOTION_3D,MAKEUP,MOTION_GESTURE,MOTION_CAMERA_MOVE]];
     }else{
-        [array addObject:self.motion2dData];
-        [array addObject:self.motion3dData];
-        [array addObject:self.motionGestureData];
-        [array addObject:self.segmentationData];
-        [array addObject:self.motionCameraMoveData];
-        [self.abilitiesMotionArray addObject:MOTION_2D];
-        [self.abilitiesMotionArray addObject:MOTION_3D];
-        [self.abilitiesMotionArray addObject:MOTION_GESTURE];
-        [self.abilitiesMotionArray addObject:SEGMENTATION];
-        [self.abilitiesMotionArray addObject:MOTION_CAMERA_MOVE];
+        [array addObjectsFromArray:@[self.lightMotionData,self.motion2dData,self.motion3dData,self.makeupData,self.motionGestureData,self.segmentationData,self.motionCameraMoveData]];
+        [self.abilitiesMotionArray addObjectsFromArray:@[LIGHT_MOTION,MOTION_2D,MOTION_3D,MAKEUP,MOTION_GESTURE,SEGMENTATION,MOTION_CAMERA_MOVE]];
     }
     return array;
 }
@@ -590,18 +616,12 @@
     [self getTemplateBeautyShapeData];
     [self getTemplateBeautyMakeupData];
     NSMutableArray<TEUIProperty *> *array = [NSMutableArray array];
-    [array addObject:self.templateBeautyData];
-    [array addObject:self.templateBeautyImageData];
-    [array addObject:self.templateBeautyShapeData];
-    [array addObject:self.templateBeautyMakeupData];
+    [array addObjectsFromArray:@[self.templateBeautyData,self.templateBeautyImageData,self.templateBeautyShapeData,self.templateBeautyMakeupData]];
     
     if (!self.abilitiesTemplateBeautyArray) {
         self.abilitiesTemplateBeautyArray = [NSMutableArray array];
     }
-    [self.abilitiesTemplateBeautyArray addObject:BEAUTY];
-    [self.abilitiesTemplateBeautyArray addObject:BEAUTY_IMAGE];
-    [self.abilitiesTemplateBeautyArray addObject:BEAUTY_SHAPE];
-    [self.abilitiesTemplateBeautyArray addObject:BEAUTY_MAKEUP];
+    [self.abilitiesTemplateBeautyArray addObjectsFromArray:@[BEAUTY,BEAUTY_IMAGE,BEAUTY_SHAPE,BEAUTY_MAKEUP]];
     return array;
     
 }
@@ -617,6 +637,7 @@
     self.lutPanelData = nil;
     self.motionPanelData = nil;
     self.makeupPanelData = nil;
+    self.lightMakeupPanelData = nil;
     self.segmentationPanelData = nil;
     [self clearMotionLutData];
 }
@@ -630,8 +651,10 @@
     self.beautyShapeData = nil;
     self.beautyData = nil;
     self.makeupData = nil;
+    self.lightMakeupData = nil;
     self.segmentationData = nil;
     self.lutData = nil;
+    self.lightMotionData = nil;
     self.motion2dData = nil;
     self.motion3dData = nil;
     self.motionGestureData = nil;
@@ -642,7 +665,7 @@
 
 - (NSArray<NSString *> *)motionOfCombos{
     if(!_motionOfCombos){
-        _motionOfCombos = @[@"A1-02",@"A1-03",@"A1-04",@"A1-05",@"A1-06",
+        _motionOfCombos = @[@"A1-02",@"A1-03",@"A1-05",@"A1-06",
                             @"S1-01",@"S1-02",@"S1-03",@"S1-04",@"S1-07"];
     }
     return _motionOfCombos;
@@ -658,12 +681,13 @@
 - (NSArray<NSString *> *)exclusionGroup{
     if(!_exclusionGroup){
         _exclusionGroup = @
-        [BEAUTY_WHITEN,BEAUTY_WHITEN2,BEAUTY_WHITEN3,
+        [BEAUTY_WHITEN0,BEAUTY_WHITEN,BEAUTY_WHITEN2,BEAUTY_WHITEN3,
+         BEAUTY_BLACK1,BEAUTY_BLACK2,
+         BEAUTY_SMOOTH,BEAUTY_SMOOTH2,BEAUTY_SMOOTH3,BEAUTY_SMOOTH4,
          BEAUTY_FACE_NATURE,BEAUTY_FACE_GODNESS,BEAUTY_FACE_MALE_GOD,
          BEAUTY_MOUTH_LIPSTICK,BEAUTY_FACE_RED_CHEEK,BEAUTY_FACE_SOFTLIGHT,
          BEAUTY_FACE_EYE_SHADOW,BEAUTY_FACE_EYE_LINER,BEAUTY_FACE_EYELASH,
          BEAUTY_FACE_EYE_SEQUINS,BEAUTY_FACE_EYEBALL,BEAUTY_HAIR_COLOR_LUT
-
         ];
     }
     return _exclusionGroup;
@@ -674,7 +698,7 @@
         _exclusionNoneGroup = @
         [BEAUTY_MOUTH_LIPSTICK,BEAUTY_FACE_RED_CHEEK,BEAUTY_FACE_SOFTLIGHT,
          BEAUTY_FACE_EYE_SHADOW,BEAUTY_FACE_EYE_LINER,BEAUTY_FACE_EYELASH,
-         BEAUTY_FACE_EYE_SEQUINS,BEAUTY_FACE_EYEBALL
+         BEAUTY_FACE_EYE_SEQUINS,BEAUTY_FACE_EYEBALL,BEAUTY_HAIR_COLOR_LUT
         ];
     }
     return _exclusionNoneGroup;
@@ -682,10 +706,10 @@
 
 - (NSMutableDictionary *)enhancedMultipleDictionary{
     if(!_enhancedMultipleDictionary){
-        _enhancedMultipleDictionary =
-        @{
+        _enhancedMultipleDictionary = [NSMutableDictionary dictionaryWithDictionary:@{
             BEAUTY_FACE_REMOVE_WRINKLE : @(1.3),
             BEAUTY_FACE_REMOVE_LAW_LINE : @(1.3),
+            BEAUTY_FACE_SKIN_RETOUCH : @(1.3),
             BEAUTY_MOUTH_LIPSTICK : @(1.3),
             BEAUTY_WHITEN : @(1.3),
             BEAUTY_FACE_SOFTLIGHT : @(1.3),
@@ -695,7 +719,7 @@
             BEAUTY_NOSE_HEIGHT : @(1.3),
             BEAUTY_EYE_LIGHTEN : @(1.5),
             BEAUTY_FACE_RED_CHEEK : @(1.8)
-        };
+        }];
     }
     return _enhancedMultipleDictionary;
 }
