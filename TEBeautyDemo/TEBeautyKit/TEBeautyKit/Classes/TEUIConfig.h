@@ -31,32 +31,34 @@ typedef NS_ENUM(NSUInteger, TEPanelLevel) {
 
 @interface TEUIConfig : NSObject
 
+//美颜面板背景色
 @property(nonatomic,strong)UIColor *panelBackgroundColor;
+//分割线颜色
 @property(nonatomic,strong)UIColor *panelDividerColor;
+//选中项颜色
 @property(nonatomic,strong)UIColor *panelItemCheckedColor;
+//文本颜色
 @property(nonatomic,strong)UIColor *textColor;
+//文本选中颜色
 @property(nonatomic,strong)UIColor *textCheckedColor;
+//进度条颜色
 @property(nonatomic,strong)UIColor *seekBarProgressColor;
 
 + (instancetype)shareInstance;
 /**
- beauty:beauty json path
- beautyBody：beautyBody json path
- lut：lut json path
- motion：motion json path
- makeup：makeup json path
- segmentation：segmentation json path
+ beauty:美颜json路径
+ beautyBody：美体json路径
+ lut：滤镜json路径
+ motion：动效json路径
+ makeup：美妆json路径
+ segmentation：背景分割json路径
  */
--(void)setTEPanelViewRes:(NSString *)beauty beautyBody:(NSString *)beautyBody lut:(NSString *)lut motion:(NSString *)motion makeup:(NSString *)makeup segmentation:(NSString *)segmentation;
+-(void)setTEPanelViewRes:(NSString *)beauty beautyBody:(NSString *)beautyBody lut:(NSString *)lut motion:(NSString *)motion makeup:(NSString *)makeup segmentation:(NSString *)segmentation lightMakeup:(NSString *)lightMakeup;
 
 
 /// 根据美颜套餐设置美颜面板的数据
 /// - Parameter panelLevel: 美颜套餐
 -(void)setPanelLevel:(TEPanelLevel)panelLevel;
-
--(void)setLightCoreBundlePath:(NSString *)corePath;
-
--(NSString *)getLightCoreBundlePath;
 
 -(NSString *)getBeautyPath;
 
@@ -67,6 +69,8 @@ typedef NS_ENUM(NSUInteger, TEPanelLevel) {
 -(NSString *)getMotionPath;
 
 -(NSString *)getMakeupPath;
+
+-(NSString *)getLightMakeupPath;
 
 -(NSString *)getSegmentationPath;
 

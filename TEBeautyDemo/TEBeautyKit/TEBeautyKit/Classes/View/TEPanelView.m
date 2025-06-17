@@ -18,20 +18,20 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "../Tool/TEUtils.h"
 #import "../Tool/TEToast.h"
-#import "../Tool/TEUIDefine.h"
 #import <XMagic/XmagicConstant.h>
 #import "../TEUIConfig.h"
 
 // 视频长度限制(ms)
 static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
-#define beautyCollectionItemWidth 70
-#define beautyCollectionItemHeight 78
+#define beautyCollectionItemWidth 62
+#define beautyCollectionItemHeight 85
+#define beautyCollectionHeight 250
 // 屏幕的宽
 #define ScreenWidth                         [[UIScreen mainScreen] bounds].size.width
 // 屏幕的高
 #define ScreenHeight                        [[UIScreen mainScreen] bounds].size.height
 
-@interface TEPanelView()<UICollectionViewDelegate,UICollectionViewDataSource,UIImagePickerControllerDelegate>
+@interface TEPanelView()<UICollectionViewDelegate,UICollectionViewDataSource,UIImagePickerControllerDelegate,UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UICollectionView *beautyCollection;
 @property (nonatomic, strong) TEUIProperty *currentUIProperty;
@@ -42,10 +42,12 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
 @property (nonatomic, strong) UIView *vLineView;
 @property (nonatomic, strong) UIView *hLineView;
 @property (nonatomic, strong) UIView *rightResetView;
+@property (nonatomic, strong) UIView *moreView;
 @property (nonatomic, strong) UIView *commonView;
 @property (nonatomic, strong) UIView *resetView;
 @property (nonatomic, strong) UIView *closeBottomView;
 @property (nonatomic, strong) UIView *openBottomView;
+@property (nonatomic, strong) UIView *coverView;
 @property (nonatomic, strong) UIView *backView;
 @property (nonatomic, strong) UIView *templateParamView;
 @property (nonatomic, strong) UIScrollView* scrollView;
@@ -63,6 +65,7 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
 @property (nonatomic, strong) TESwitch *capabilitiesSwitch;
 @property (nonatomic, strong) UILabel *capabilitiesStatusLabel;
 @property (nonatomic, assign) BOOL faceSwitchStatus;
+@property (nonatomic, assign) BOOL lightMakeupUsed;  //使用了轻美妆
 @property (nonatomic, assign) BOOL gestureSwitchStatus;
 @property (nonatomic, strong) UIView *underView;
 @property (nonatomic, assign) int segmentationBgType;
@@ -73,6 +76,7 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
 @property (nonatomic, strong) NSNumber* timeOffset;
 @property (nonatomic, copy) NSString *abilityType;
 @property (nonatomic, copy) NSString *comboType;
+@property (nonatomic, assign) BOOL moreClicked;
 @property (nonatomic, assign) int makeupType;
 @property (nonatomic, assign) int templateType;
 @property (nonatomic, strong) TEUIProperty *currentTemplateProperty;
@@ -85,6 +89,7 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
 @property (nonatomic, assign) BOOL showOrigin;//是否显示原图
 @property (nonatomic, assign) BOOL templateParam;//是否是在修改美颜模板界面
 @property (nonatomic, strong) TEUIProperty *lastTemplateProperty;
+@property (nonatomic, strong) TEUIProperty *curProperty;
 //分类View
 @property (nonatomic, strong) UIView *bottomView;
 @property (nonatomic, strong) UIView *originBeautyView;
@@ -94,7 +99,12 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
 @property (nonatomic, strong) UIButton *photoBtn;
 @property (nonatomic, strong) TEClassificationView *makeupView;
 @property (nonatomic, strong) TEClassificationView *lutView;
+@property (nonatomic, strong) UITapGestureRecognizer *selfTapGesture;
+@property (nonatomic, assign) BOOL isShowGridLayout;
+@property (nonatomic, assign) BOOL isLightMakeup;
+@property (nonatomic, assign) TEShoppingType teShoppingType;
 
+@property (nonatomic, strong) NSMutableArray<NSString *> *lightMakeupEffectNames;
 
 @end
 
@@ -112,23 +122,33 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
 }
 
 -(void)initData{
+    _isLightMakeup = NO;
     _tePanelDataProvider = [TEPanelDataProvider shareInstance];
+    _beautyType = 0;
     if([self isTEDemo]){
         if([_abilityType isEqualToString:TEUI_BEAUTY] ||
            [_abilityType isEqualToString:TEUI_BEAUTY_IMAGE] ||
            [_abilityType isEqualToString:TEUI_BEAUTY_SHAPE] ||
-           [_abilityType isEqualToString:TEUI_BEAUTY_BODY]){
+           [_abilityType isEqualToString:TEUI_BEAUTY_BODY ]||
+            [_abilityType isEqualToString:TEUI_GAN_BEAUTY_SKIN]){
             _currentUIPropertyList = [_tePanelDataProvider getAbilitiesBeautyData:self.comboType];
             _beautyType = (int)[_tePanelDataProvider.abilitiesBeautyArray indexOfObject:_abilityType];
+            //gan美肌不是一个table，所以这里会返回-1
+            if (_beautyType < 0) {
+                _beautyType = 0;
+            }
         }else if ([_abilityType isEqualToString:TEUI_BEAUTY_MAKEUP] ||
-                  [_abilityType isEqualToString:TEUI_MAKEUP]){
+                  [_abilityType isEqualToString:TEUI_LIGHT_MAKEUP]){
             _currentUIPropertyList = [_tePanelDataProvider getAbilitiesMakeupData:self.comboType];
             _beautyType = (int)[_tePanelDataProvider.abilitiesMakeupArray indexOfObject:_abilityType];
+            _isLightMakeup = YES;
         }else if ([_abilityType isEqualToString:TEUI_MOTION_2D] ||
                   [_abilityType isEqualToString:TEUI_MOTION_3D] ||
+                  [_abilityType isEqualToString:TEUI_LIGHT_MOTION] ||
                   [_abilityType isEqualToString:TEUI_MOTION_GESTURE] ||
                   [_abilityType isEqualToString:TEUI_MOTION_CAMERA_MOVE] ||
-                  [_abilityType isEqualToString:TEUI_SEGMENTATION]){
+                  [_abilityType isEqualToString:TEUI_SEGMENTATION] ||
+                  [_abilityType isEqualToString:TEUI_MAKEUP]){
             _currentUIPropertyList = [_tePanelDataProvider getAbilitiesMotionData:self.comboType];
             _beautyType = (int)[_tePanelDataProvider.abilitiesMotionArray indexOfObject:_abilityType];
         }else if([_abilityType isEqualToString:TEUI_LUT] ){
@@ -155,12 +175,16 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
         _currentUIPropertyList = [_tePanelDataProvider getAllPanelData];
         _currentUIProperty = _currentUIPropertyList[_beautyType];
     }
+    _isShowGridLayout = _currentUIProperty.isShowGridLayout;
 }
 
 
 -(void)initUI{
     if([self isTEDemo]){
         self.backgroundColor = [UIColor clearColor];
+        [self mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.height.mas_equalTo(320);
+        }];
         self.commonView = [[UIView alloc]init];
         self.commonView.backgroundColor = [UIColor clearColor];
         self.commonView.userInteractionEnabled = YES;
@@ -178,35 +202,20 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
         }];
 
         [self.commonView addSubview:self.beautyCollection];
+        
         [self.beautyCollection mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.mas_equalTo(self.mas_width);
-            make.left.mas_equalTo(self.mas_left);
+            make.left.mas_equalTo(self.mas_left).mas_offset(20);
+            make.right.mas_equalTo(self.mas_right).offset(-70);
             make.top.mas_equalTo(self.mas_top).offset(90);
             make.height.mas_equalTo(beautyCollectionItemHeight);
         }];
-        
-        [self.commonView addSubview:self.makeupOrLut];
-        [self.makeupOrLut mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.mas_equalTo(82);
-            make.height.mas_equalTo(26);
-            make.left.mas_equalTo(self).mas_offset(10);
+        [self.commonView addSubview:self.moreView];
+        [self.moreView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.right.mas_equalTo(self.mas_right);
+            make.top.mas_equalTo(self.beautyCollection.mas_top);
+            make.height.mas_equalTo(beautyCollectionItemHeight);
+            make.width.mas_equalTo(beautyCollectionItemWidth);
         }];
-        self.makeupOrLut.hidden = YES;
-
-        [self.commonView addSubview:self.compareButton];
-        [self.compareButton mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.right.mas_equalTo(self).mas_offset(-5);
-            make.top.mas_equalTo(self);
-            make.width.height.mas_equalTo(35);
-        }];
-        
-        [self.commonView addSubview:self.teSlider];
-        [self.teSlider mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(self).mas_offset(10);
-            make.right.mas_equalTo(self).mas_offset(-45);
-            make.centerY.mas_equalTo(self.compareButton.mas_centerY);
-        }];
-        self.teSlider.hidden = YES;
 
         _hLineView= [[UIView alloc] init];
         _hLineView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
@@ -214,7 +223,7 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
         [_hLineView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.width.mas_equalTo(self.mas_width);
             make.left.mas_equalTo(self.mas_left);
-            make.top.mas_equalTo(self.blackView).mas_offset(38);
+            make.top.mas_equalTo(self.blackView).mas_offset(36);
             make.height.mas_equalTo(1);
         }];
 
@@ -253,16 +262,16 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
 
         [self.commonView addSubview:self.resetView];
         [self.resetView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.mas_equalTo(24);
-            make.height.mas_equalTo(42);
+            make.width.mas_equalTo(36);
+            make.height.mas_equalTo(54);
             make.top.mas_equalTo(self.beautyCollection.mas_bottom).mas_offset(20);
             make.left.mas_equalTo(self).mas_offset(23);
         }];
 
         [self.commonView addSubview:self.backView];
         [self.backView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.mas_equalTo(24);
-            make.height.mas_equalTo(42);
+            make.width.mas_equalTo(36);
+            make.height.mas_equalTo(54);
             make.top.mas_equalTo(self.beautyCollection.mas_bottom).mas_offset(20);
             make.right.mas_equalTo(self).mas_offset(-23);
         }];
@@ -270,8 +279,8 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
 
         [self.commonView addSubview:self.closeBottomView];
         [self.closeBottomView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.mas_equalTo(24);
-            make.height.mas_equalTo(42);
+            make.width.mas_equalTo(36);
+            make.height.mas_equalTo(54);
             make.top.mas_equalTo(self.beautyCollection.mas_bottom).mas_offset(20);
             if([_abilityType isEqualToString:TEUI_BEAUTY_TEMPLATE]){
                 make.left.mas_equalTo(self).mas_offset(23);
@@ -285,8 +294,8 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
 
         [self.underView addSubview:self.openBottomView];
         [self.openBottomView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.mas_equalTo(24);
-            make.height.mas_equalTo(42);
+            make.width.mas_equalTo(36);
+            make.height.mas_equalTo(54);
             make.top.mas_equalTo(self.beautyCollection.mas_bottom).mas_offset(20);
             if([_abilityType isEqualToString:TEUI_BEAUTY_TEMPLATE]){
                 make.left.mas_equalTo(self).mas_offset(23);
@@ -297,8 +306,8 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
 
         [self.commonView addSubview:self.templateParamView];
         [self.templateParamView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.mas_equalTo(24);
-            make.height.mas_equalTo(42);
+            make.width.mas_equalTo(36);
+            make.height.mas_equalTo(54);
             make.top.mas_equalTo(self.beautyCollection.mas_bottom).mas_offset(20);
             make.right.mas_equalTo(self).mas_offset(-23);
         }];
@@ -322,6 +331,30 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
         self.scrollView.showsHorizontalScrollIndicator = NO;
 
         [self addTabButtons:NO];
+        
+        [self.commonView addSubview:self.makeupOrLut];
+        [self.makeupOrLut mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.width.mas_equalTo(82);
+            make.height.mas_equalTo(26);
+            make.left.mas_equalTo(self).mas_offset(10);
+            make.bottom.mas_equalTo(self.scrollView.mas_top).mas_offset(-15);
+        }];
+        self.makeupOrLut.hidden = YES;
+
+        [self.commonView addSubview:self.compareButton];
+        [self.compareButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.right.mas_equalTo(self).mas_offset(-5);
+            make.bottom.mas_equalTo(self.scrollView.mas_top).mas_offset(-10);
+            make.width.height.mas_equalTo(35);
+        }];
+        
+        [self.commonView addSubview:self.teSlider];
+        [self.teSlider mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(self).mas_offset(10);
+            make.right.mas_equalTo(self).mas_offset(-45);
+            make.centerY.mas_equalTo(self.compareButton.mas_centerY);
+        }];
+        self.teSlider.hidden = YES;
 
         [self setupBottomView];
         if(_abilityType.length == 0){
@@ -339,6 +372,16 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
             _capabilitiesSwitch.hidden = YES;
             _capabilitiesStatusLabel.hidden = YES;
         }
+        
+        if (!_isShowGridLayout){
+            [self.beautyCollection mas_remakeConstraints:^(MASConstraintMaker *make) {
+                make.right.mas_equalTo(self).mas_offset(-20);
+                make.left.mas_equalTo(self).mas_offset(20);
+                make.top.mas_equalTo(self.mas_top).offset(90);
+                make.height.mas_equalTo(beautyCollectionItemHeight);
+            }];
+            self.moreView.hidden = YES;
+        }
     }else{
         self.backgroundColor = [UIColor clearColor];
         self.commonView = [[UIView alloc]init];
@@ -351,31 +394,40 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
         
         [self.commonView addSubview:self.blackView];
         [self.blackView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(self);
-            make.right.mas_equalTo(self);
+            make.width.mas_equalTo(self.mas_width);
+            make.left.mas_equalTo(self.mas_left);
             make.bottom.mas_equalTo(self);
-            make.height.mas_equalTo(160);
+            make.height.mas_equalTo(165);
         }];
         
         [self.blackView addSubview:self.beautyCollection];
         [self.beautyCollection mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(self);
-            make.right.mas_equalTo(self);
-            make.bottom.mas_equalTo(self.mas_safeAreaLayoutGuideBottom);
+            make.width.mas_equalTo(self.mas_width);
+            make.left.mas_equalTo(self.mas_left);
+            make.bottom.mas_equalTo(self.blackView.mas_bottom).mas_offset(-20);
             make.height.mas_equalTo(beautyCollectionItemHeight);
         }];
+        // 先屏蔽更多按钮
+//        [self.commonView addSubview:self.moreView];
+//        [self.moreView mas_makeConstraints:^(MASConstraintMaker *make) {
+//            make.right.mas_equalTo(self.mas_right);
+//            make.top.mas_equalTo(self.beautyCollection.mas_top);
+//            make.height.mas_equalTo(beautyCollectionItemHeight);
+//            make.width.mas_equalTo(beautyCollectionItemWidth);
+//        }];
+        self.moreView.hidden = YES;
         
         [self.commonView addSubview:self.compareButton];
         [self.compareButton mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.right.mas_equalTo(self).mas_offset(-10);
-            make.width.height.mas_equalTo(25);
+            make.right.mas_equalTo(self).mas_offset(-5);
+            make.width.height.mas_equalTo(35);
             make.bottom.mas_equalTo(self.blackView.mas_top).mas_offset(-5);
         }];
 
         [self.commonView addSubview:self.teSlider];
         [self.teSlider mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.mas_equalTo(self).mas_offset(10);
-            make.right.mas_equalTo(self).mas_offset(_showCompareBtn ? -45:-10);
+            make.right.mas_equalTo(self).mas_offset(-45);
             make.centerY.mas_equalTo(self.compareButton.mas_centerY);
         }];
         self.teSlider.hidden = YES;
@@ -395,7 +447,7 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
         [_hLineView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.width.mas_equalTo(self.mas_width);
             make.left.mas_equalTo(self.mas_left);
-            make.bottom.mas_equalTo(self.beautyCollection.mas_top).mas_offset(-10);
+            make.top.mas_equalTo(self.blackView).mas_offset(38);
             make.height.mas_equalTo(1);
         }];
         
@@ -475,6 +527,13 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
     self.bottomView.hidden = YES;
 }
 
+-(void)openLightMakeup{
+    BOOL open = [[NSUserDefaults standardUserDefaults] boolForKey:@"te_lightmakeup"];
+    if(!open){
+        [self lightMakeupClick];
+    }
+}
+
 - (TESlider *)teSlider{
     if(!_teSlider){
         _teSlider = [[TESlider alloc]init];
@@ -482,13 +541,7 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
         _teSlider.minimumValue = 0;
         _teSlider.maximumValue = 100;
         [_teSlider addTarget:self action:@selector(valueChange:) forControlEvents:UIControlEventValueChanged];
-        UIImage *originalThumbImage = [[TEUIConfig shareInstance] imageNamed:@"slider"];
-        CGSize newSize = CGSizeMake(15, 15);
-        UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
-        [originalThumbImage drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
-        UIImage *resizedThumbImage = UIGraphicsGetImageFromCurrentImageContext();
-               UIGraphicsEndImageContext();
-        [_teSlider setThumbImage:resizedThumbImage forState:UIControlStateNormal];
+        [_teSlider setThumbImage:[[TEUIConfig shareInstance] imageNamed:@"SliderIcon"] forState:UIControlStateNormal];
     }
     return _teSlider;
 }
@@ -541,6 +594,7 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
         _beautyCollection.delegate = self;
         _beautyCollection.scrollEnabled = YES;
         _beautyCollection.showsHorizontalScrollIndicator = NO;
+        _beautyCollection.showsVerticalScrollIndicator = NO;
         [_beautyCollection registerClass:[TECollectionViewCell class] forCellWithReuseIdentifier:@"TECollectionViewCell"];
     }
     return _beautyCollection;
@@ -641,14 +695,14 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
                 make.width.mas_equalTo(btnWidth);
                 make.height.mas_equalTo(24);
                 make.centerX.mas_equalTo(self);
-                make.bottom.mas_equalTo(self.hLineView.mas_top).mas_offset(-5);
+                make.top.mas_equalTo(self.blackView.mas_top).mas_offset(6);
             }];
         }else{
             [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.width.mas_equalTo(btnWidth);
                 make.height.mas_equalTo(24);
                 make.centerX.mas_equalTo(self);
-                make.bottom.mas_equalTo(self.hLineView.mas_top).mas_offset(-5);
+                make.top.mas_equalTo(self.blackView.mas_top).mas_offset(6);
             }];
         }
         self.scrollView.scrollEnabled = NO;
@@ -686,7 +740,7 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
             [self.scrollView mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.left.mas_equalTo(self);
                 make.height.mas_equalTo(24);
-                make.bottom.mas_equalTo(self.hLineView.mas_top).mas_offset(-5);
+                make.top.mas_equalTo(self.blackView.mas_top).mas_offset(5);
                 if([self isTEDemo]){
                     make.width.mas_equalTo(self);
                 }else{
@@ -699,7 +753,7 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
             [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.left.mas_equalTo(self);
                 make.height.mas_equalTo(24);
-                make.bottom.mas_equalTo(self.hLineView.mas_top).mas_offset(-5);
+                make.top.mas_equalTo(self.blackView.mas_top).mas_offset(6);
                 if([self isTEDemo]){
                     make.width.mas_equalTo(self);
                 }else{
@@ -718,7 +772,7 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
                 }
                 make.height.mas_equalTo(24);
                 make.centerX.mas_equalTo(self);
-                make.bottom.mas_equalTo(self.hLineView.mas_top).mas_offset(-5);
+                make.top.mas_equalTo(self.blackView.mas_top).mas_offset(6);
                 if([self isTEDemo]){
                     make.width.mas_equalTo(x);
                 }else{
@@ -734,7 +788,7 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
                 }
                 make.height.mas_equalTo(24);
                 make.centerX.mas_equalTo(self);
-                make.bottom.mas_equalTo(self.hLineView.mas_top).mas_offset(-5);
+                make.top.mas_equalTo(self.blackView.mas_top).mas_offset(6);
                 if([self isTEDemo]){
                     make.width.mas_equalTo(x);
                 }else{
@@ -822,7 +876,6 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
         _backButton=[[UIButton alloc] initWithFrame:CGRectMake(0, 2, 30, 30)];
         [_backButton setImage:[[TEUIConfig shareInstance] imageNamed:@"backto.png"] forState:UIControlStateNormal];
         [_backButton setBackgroundColor:[UIColor clearColor]];
-        _backButton.alpha = 0.7;
         
         [self.blackView addSubview:_backButton];
         [_backButton addTarget:self action:@selector(clickBack) forControlEvents:UIControlEventTouchUpInside];
@@ -842,51 +895,83 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
     }
     [_titleBtns[number] setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     _currentUIProperty = _currentUIPropertyList[_beautyType];
+    if ([_currentUIProperty.abilityType isEqualToString:TEUI_MOTION_2D] ||
+        [_currentUIProperty.abilityType isEqualToString:TEUI_MOTION_CAMERA_MOVE] ||
+        [_currentUIProperty.abilityType isEqualToString:TEUI_LIGHT_MOTION]) {
+        _teShoppingType = TE_2D_MOTION;
+    }else if ([_currentUIProperty.abilityType isEqualToString:TEUI_MOTION_3D]){
+        _teShoppingType = TE_3D_MOTION;
+    }else if ([_currentUIProperty.abilityType isEqualToString:TEUI_LIGHT_MAKEUP] ||
+              [_currentUIProperty.abilityType isEqualToString:TEUI_MAKEUP]){
+        _teShoppingType = TE_MAKEUP;
+    }else if ([_currentUIProperty.abilityType isEqualToString:TEUI_MOTION_GESTURE]){
+        _teShoppingType = TE_HAND_MOTION;
+    }else if ([_currentUIProperty.abilityType isEqualToString:TEUI_LUT]){
+        _teShoppingType = TE_LUT;
+    }else if ([_currentUIProperty.abilityType isEqualToString:TEUI_SEGMENTATION] ||
+              [_currentUIProperty.abilityType isEqualToString:TEUI_PORTRAIT_SEGMENTATION]){
+        _teShoppingType = TE_SEGMENTATION;
+    }else{
+        _teShoppingType = TE_NONE;
+    }
+    if([self.delegate respondsToSelector:@selector(selectCategory:)]){
+        [self.delegate selectCategory:_teShoppingType];
+    }
     [self.beautyCollection reloadData];
     if([_currentUIPropertyList[_beautyType].abilityType isEqualToString:TEUI_FACE_DETECTION]){
         [self.capabilitiesSwitch setOn:self.faceSwitchStatus];
     }else if ([_currentUIPropertyList[_beautyType].abilityType isEqualToString:TEUI_GESTURE_DETECTION]){
         [self.capabilitiesSwitch setOn:self.gestureSwitchStatus];
     }
+    
+    //先屏蔽在 更多按钮的展示
+//    if(![self isTEDemo]){
+//        _isShowGridLayout = _currentUIProperty.isShowGridLayout;
+//        [self updateBeautyCollectionView:_isShowGridLayout];
+//    }
 }
 
--(void)clickBack{
-    if([_currentUIPropertyList[_beautyType].propertyList containsObject:_currentUIProperty]){
+- (void)clickBack {
+    NSMutableArray <TEUIProperty *> *propertyList = _currentUIPropertyList[_beautyType].propertyList;
+    if ([propertyList containsObject:_currentUIProperty]) {
         for (TEUIProperty *property in _currentUIProperty.propertyList) {
-            if(property.uiState == TEUIState_CHECKED_AND_IN_USE){
-                int index = (int)[_currentUIPropertyList[_beautyType].propertyList indexOfObject:_currentUIProperty];
-                for (int i = 0; i < _currentUIPropertyList[_beautyType].propertyList.count; i++) {
-                    if(_currentUIPropertyList[_beautyType].propertyList[i].uiState == TEUIState_CHECKED_AND_IN_USE){
-                        if(_currentUIPropertyList[_beautyType].propertyList[i].sdkParam.effectValue == 0){
-                            _currentUIPropertyList[_beautyType].propertyList[i].uiState = TEUIState_INIT;
-                        }else{
-                            _currentUIPropertyList[_beautyType].propertyList[i].uiState = TEUIState_IN_USE;
+            if (property.uiState == TEUIState_CHECKED_AND_IN_USE) {
+                for (int i = 0; i < propertyList.count; i++) {
+                    if (propertyList[i].uiState == TEUIState_CHECKED_AND_IN_USE) {
+                        if (propertyList[i].propertyList.count == 0 && propertyList[i].sdkParam.effectValue == 0) {
+                            propertyList[i].uiState = TEUIState_INIT;
+                        } else {
+                            propertyList[i].uiState = TEUIState_IN_USE;
                         }
                     }
                 }
-                _currentUIPropertyList[_beautyType].propertyList[index].uiState = TEUIState_CHECKED_AND_IN_USE;
+                int index = (int)[propertyList indexOfObject:_currentUIProperty];
+                if (property.sdkParam.effectValue == 0) {
+                    propertyList[index].uiState = TEUIState_INIT;
+                } else {
+                    propertyList[index].uiState = TEUIState_CHECKED_AND_IN_USE;
+                }
                 break;
-            }else if(property.uiState == TEUIState_IN_USE){
-                if(_currentUIProperty.uiState == TEUIState_INIT){
+            } else if (property.uiState == TEUIState_IN_USE) {
+                if (_currentUIProperty.uiState == TEUIState_INIT) {
                     _currentUIProperty.uiState = TEUIState_IN_USE;
                 }
             }
         }
         _currentUIProperty = _currentUIPropertyList[_beautyType];
         [self setSubMenu:NO];
-    }else{
-        _currentUIProperty = [self getParentProperty:_currentUIPropertyList[_beautyType].propertyList property:_currentUIProperty];
+    } else {
+        _currentUIProperty = [self getParentProperty:propertyList property:_currentUIProperty];
         [self setSubMenu:YES];
     }
     self.teSlider.hidden = YES;
     [self.beautyCollection reloadData];
     for (TEUIProperty *property in _currentUIProperty.propertyList) {
         if (property.uiState == TEUIState_CHECKED_AND_IN_USE) {
-            int index = (int)[_currentUIPropertyList[_beautyType].propertyList indexOfObject:property];
-            [self.beautyCollection scrollToItemAtIndexPath:
-            [NSIndexPath indexPathForItem:index inSection:0]
-            atScrollPosition:UICollectionViewScrollPositionLeft
-            animated:NO];
+            int index = (int)[propertyList indexOfObject:property];
+            [self.beautyCollection scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:index inSection:0]
+                                          atScrollPosition:UICollectionViewScrollPositionLeft
+                                                  animated:NO];
             break;
         }
     }
@@ -903,7 +988,6 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
         if([teUIPropertyList[i].propertyList containsObject:property]){
             for (TEUIProperty *teuiproperty in property.propertyList) {
                 if(teuiproperty.uiState == TEUIState_CHECKED_AND_IN_USE){
-                    int index = (int)[teUIPropertyList[i].propertyList indexOfObject:property];
                     for (TEUIProperty *uiProperty in teUIPropertyList[i].propertyList) {
                         if(uiProperty.uiState == TEUIState_CHECKED_AND_IN_USE){
                             if(uiProperty.sdkParam.effectValue == TEUIState_INIT){
@@ -925,7 +1009,7 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
 
 - (void)valueChange:(id)sender {
     UISlider * slider =(UISlider*)sender;
-    if(_currentUIProperty.teCategory == TECategory_MAKEUP && _makeupType == 1){
+    if((_currentUIProperty.teCategory == TECategory_MAKEUP || _currentUIProperty.teCategory == TECategory_LIGHTMAKEUP) && _makeupType == 1){
         _currentUIProperty.propertyList[_selectedIndex].sdkParam.extraInfo.makeupLutStrength = [NSString stringWithFormat:@"%f",slider.value];
     }else{
         if(self.templateParam){
@@ -1119,13 +1203,22 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
     return _rightResetView;
 }
 
+-(UIView *)moreView{
+    if(!_moreView){
+        _moreView =[self getMoreView:[[TEUIConfig shareInstance] localizedString:@"more_btn_txt"] imageName:@"more"];
+        UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(moreClick)];
+        [_moreView addGestureRecognizer:tapGesture];
+    }
+    return _moreView;
+}
+
 -(UIView *)rightView{
     UIView *rightView = [[UIView alloc] init];
     UIImageView *imageView = [[UIImageView alloc] init];
     [imageView setImage:[[TEUIConfig shareInstance] imageNamed:@"reset"]];
     [rightView addSubview:imageView];
     [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.height.mas_equalTo(16);
+        make.width.height.mas_equalTo(24);
         make.left.mas_equalTo(rightView);
         make.centerY.mas_equalTo(rightView.mas_centerY);
     }];
@@ -1147,19 +1240,73 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
     return rightView;
 }
 
+-(UIView *)buildMoreView{
+    UIView *rightView = [[UIView alloc] init];
+    UIImageView *imageView = [[UIImageView alloc] init];
+    [imageView setImage:[[TEUIConfig shareInstance] imageNamed:@"more"]];
+    [rightView addSubview:imageView];
+    [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.width.height.mas_equalTo(16);
+        make.left.mas_equalTo(rightView);
+        make.centerY.mas_equalTo(rightView.mas_centerY);
+    }];
+    
+    UILabel *label = [[UILabel alloc] init];
+    label.text = [[TEUIConfig shareInstance] localizedString:@"more_btn_txt"];
+    label.textColor = [UIColor whiteColor];
+    label.textAlignment = NSTextAlignmentCenter;
+    label.font = [UIFont fontWithName:@"PingFangSC-Regular" size:14];
+    [rightView addSubview:label];
+    CGFloat width = [TEUtils textWidthFromTitle:label.text font:label.font];
+    [label mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.width.mas_equalTo(width);
+        make.height.mas_equalTo(18);
+        make.left.mas_equalTo(imageView.mas_right);
+        make.centerY.mas_equalTo(imageView.mas_centerY);
+    }];
+    
+    return rightView;
+}
 
--(UIView *)getBottomView:(NSString *)text imageName:(NSString *)imageName{
+-(UIView *)getMoreView:(NSString *)text imageName:(NSString *)imageName{
     UIView *resetView = [[UIView alloc] init];
-    CGFloat width = 24;
-    if(![TEUtils isCurrentLanguageHans]){
-        width = [TEUtils textWidthFromTitle:text font:[UIFont systemFontOfSize:12]];
-    }
-    resetView.frame = CGRectMake(0, 0, width, 42);
+    resetView.frame = CGRectMake(0, 0,beautyCollectionItemWidth, beautyCollectionItemHeight);
     UIImageView *imageView = [[UIImageView alloc] init];
     [imageView setImage:[[TEUIConfig shareInstance] imageNamed:imageName]];
     [resetView addSubview:imageView];
     [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.height.mas_equalTo(24);
+        make.width.height.mas_equalTo(54);
+        make.top.mas_equalTo(resetView).mas_offset(4);
+        make.centerX.mas_equalTo(resetView.mas_centerX);
+    }];
+    
+    UILabel *label = [[UILabel alloc] init];
+    label.text = text;
+    label.textColor = [UIColor whiteColor];
+    label.textAlignment = NSTextAlignmentCenter;
+    [label setFont:[UIFont fontWithName:@"PingFangSC-Semibold" size:[TEUtils isCurrentLanguageHans] ? 12 : 8.5]];
+    [resetView addSubview:label];
+    [label mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.width.mas_equalTo(beautyCollectionItemWidth);
+        make.height.mas_equalTo(18);
+        make.top.mas_equalTo(imageView.mas_bottom);
+        make.centerX.mas_equalTo(resetView.mas_centerX);
+    }];
+    return resetView;
+}
+
+-(UIView *)getBottomView:(NSString *)text imageName:(NSString *)imageName{
+    UIView *resetView = [[UIView alloc] init];
+    CGFloat width = 36;
+    if(![TEUtils isCurrentLanguageHans]){
+        width = [TEUtils textWidthFromTitle:text font:[UIFont systemFontOfSize:12]];
+    }
+    resetView.frame = CGRectMake(0, 0, width, 54);
+    UIImageView *imageView = [[UIImageView alloc] init];
+    [imageView setImage:[[TEUIConfig shareInstance] imageNamed:imageName]];
+    [resetView addSubview:imageView];
+    [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.width.height.mas_equalTo(36);
         make.top.mas_equalTo(resetView);
         make.centerX.mas_equalTo(resetView.mas_centerX);
     }];
@@ -1254,6 +1401,11 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
     }
     self.bottomView.hidden = YES;
     self.commonView.hidden = NO;
+    [self updateBeautyCollectionView:NO];
+    _teShoppingType = TE_NONE;
+    if([self.delegate respondsToSelector:@selector(selectCategory:)]){
+        [self.delegate selectCategory:_teShoppingType];
+    }
 }
 
 - (void)stickerClick:(UITapGestureRecognizer *)gesture{
@@ -1263,13 +1415,15 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
     }
     if(![_abilityType isEqualToString:TEUI_MOTION_2D] &&
        ![_abilityType isEqualToString:TEUI_MOTION_3D] &&
+       ![_abilityType isEqualToString:TEUI_LIGHT_MOTION] &&
        ![_abilityType isEqualToString:TEUI_MOTION_GESTURE] &&
        ![_abilityType isEqualToString:TEUI_MOTION_CAMERA_MOVE] &&
        ![_abilityType isEqualToString:TEUI_SEGMENTATION]){
         for (UIButton *btn in self.titleBtns) {
             [btn removeFromSuperview];
         }
-        _abilityType = TEUI_MOTION_2D;
+        _abilityType = TEUI_LIGHT_MOTION;
+        _teShoppingType = TE_2D_MOTION;
         [self initData];
         [self.titleBtns removeAllObjects];
         [self addTabButtons:YES];
@@ -1278,6 +1432,31 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
     }
     self.bottomView.hidden = YES;
     self.commonView.hidden = NO;
+    [self updateBeautyCollectionView:YES];
+    if([self.delegate respondsToSelector:@selector(selectCategory:)]){
+        [self.delegate selectCategory:_teShoppingType];
+    }
+}
+
+- (void)updateBeautyCollectionView:(BOOL)isShowGridView{
+    int mas_top = [self isTEDemo ]? 90:150;
+    if (isShowGridView) {
+        [self.beautyCollection mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(self.mas_left).mas_offset(20);
+            make.right.mas_equalTo(self.mas_right).offset(-70);
+            make.top.mas_equalTo(self.mas_top).offset(mas_top);
+            make.height.mas_equalTo(beautyCollectionItemHeight);
+        }];
+        _moreView.hidden = NO;
+    }else{
+        [self.beautyCollection mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(self.mas_left).mas_offset(20);
+            make.right.mas_equalTo(self.mas_right).offset(-20);
+            make.top.mas_equalTo(self.mas_top).offset(mas_top);
+            make.height.mas_equalTo(beautyCollectionItemHeight);
+        }];
+        _moreView.hidden = YES;
+    }
 }
 
 - (void)makeupClick:(UITapGestureRecognizer *)gesture{
@@ -1286,12 +1465,17 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
         return;
     }
     if(![_abilityType isEqualToString:TEUI_BEAUTY_MAKEUP] &&
-       ![_abilityType isEqualToString:TEUI_MAKEUP]){
+       ![_abilityType isEqualToString:TEUI_LIGHT_MAKEUP]){
         for (UIButton *btn in self.titleBtns) {
             [btn removeFromSuperview];
         }
-        _abilityType = TEUI_BEAUTY_MAKEUP;
+        if ([_comboType isEqualToString:@"A1-06"]) {
+            _abilityType = TEUI_LIGHT_MAKEUP;
+        }else{
+            _abilityType = TEUI_BEAUTY_MAKEUP;
+        }
         [self initData];
+        [self openLightMakeup];
         [self.titleBtns removeAllObjects];
         [self addTabButtons:YES];
         [self setSubMenu:NO];
@@ -1299,6 +1483,15 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
     }
     self.bottomView.hidden = YES;
     self.commonView.hidden = NO;
+    [self updateBeautyCollectionView:NO];
+    if (_abilityType == TEUI_LIGHT_MAKEUP) {
+        _teShoppingType = TE_MAKEUP;
+    }else{
+        _teShoppingType = TE_NONE;
+    }
+    if([self.delegate respondsToSelector:@selector(selectCategory:)]){
+        [self.delegate selectCategory:_teShoppingType];
+    }
 }
 
 - (void)lutClick:(UITapGestureRecognizer *)gesture{
@@ -1316,6 +1509,11 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
     }
     self.bottomView.hidden = YES;
     self.commonView.hidden = NO;
+    [self updateBeautyCollectionView:NO];
+    _teShoppingType = TE_LUT;
+    if([self.delegate respondsToSelector:@selector(selectCategory:)]){
+        [self.delegate selectCategory:_teShoppingType];
+    }
 }
 
 -(void)leftButtonAction:(UIButton *)sender {
@@ -1416,55 +1614,174 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
     self.resetView.hidden = NO;
     self.makeupOrLut.hidden = YES;
     [self.teSlider mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.mas_equalTo(self).mas_offset(_showCompareBtn ? -45 : -10);
+        make.right.mas_equalTo(self).mas_offset(-45);
         make.left.mas_equalTo(self).mas_offset(10);
         make.centerY.mas_equalTo(self.compareButton.mas_centerY);
     }];
 }
 
-- (void)resetClick{
-    // 初始化UIAlertController
+- (void)setupGestureRecognizer {
+    self.selfTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(coverViewClick)];
+    [self addGestureRecognizer:self.selfTapGesture];
+    self.selfTapGesture.delegate = self;
+    self.userInteractionEnabled = YES;
+}
+
+- (void)removeTapGesture {
+    if (self.selfTapGesture) {
+        [self removeGestureRecognizer:self.selfTapGesture];
+        self.selfTapGesture = nil;
+    }
+}
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    UIView *touchedView = touch.view;
+    while (touchedView) {
+        if ([touchedView isKindOfClass:[UICollectionViewCell class]]) {
+            return NO;
+        }
+        touchedView = touchedView.superview;
+    }
+    
+    return YES;
+}
+
+
+- (void)coverViewClick{
+    if (!_moreClicked) {
+        return;
+    }
+    [self removeTapGesture];
+    _moreClicked = NO;
+    [self setMoreClick];
+    if([self isTEDemo]) {
+        [self mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.height.mas_equalTo(320);
+        }];
+        [self.blackView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.width.mas_equalTo(self.mas_width);
+            make.left.mas_equalTo(self.mas_left);
+            make.height.mas_equalTo(280);
+            make.bottom.mas_equalTo(self.mas_bottom);
+        }];
+        [self.beautyCollection mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(self.mas_left).mas_offset(20);
+            make.right.mas_equalTo(self.mas_right).offset(-70);
+            make.top.mas_equalTo(self.mas_top).offset(90);
+            make.height.mas_equalTo(beautyCollectionItemHeight);
+        }];
+    }else {
+        [self mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.height.mas_equalTo(beautyCollectionHeight);
+        }];
+        [self.blackView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.width.mas_equalTo(self.mas_width);
+            make.left.mas_equalTo(self.mas_left);
+            make.height.mas_equalTo(180);
+            make.bottom.mas_equalTo(self.mas_bottom);
+        }];
+        [self.beautyCollection mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(self.mas_left).mas_offset(20);
+            make.right.mas_equalTo(self.mas_right).offset(-70);
+            make.top.mas_equalTo(self.mas_top).offset(120);
+            make.height.mas_equalTo(beautyCollectionItemHeight);
+        }];
+    }
+    [self switchCollectionViewDirection];
+    if([self.delegate respondsToSelector:@selector(moreClicked:)]){
+        [self.delegate moreClicked:NO];
+    }
+}
+
+- (void)moreClick{
+    _moreClicked = YES;
+    [self setupGestureRecognizer];
+    [self setMoreClick];
+    [self mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(ScreenHeight);
+    }];
+    [self.blackView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.width.mas_equalTo(self.mas_width);
+        make.left.mas_equalTo(self.mas_left);
+        make.height.mas_equalTo(360);
+        make.bottom.mas_equalTo(self.mas_bottom);
+    }];
+    [self.beautyCollection mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.mas_equalTo(self.mas_right).mas_offset(-20);
+        make.left.mas_equalTo(self.mas_left).mas_offset(20);
+        make.top.mas_equalTo(self.hLineView.mas_bottom).mas_offset(10);
+        make.height.mas_equalTo(230);
+    }];
+    [self switchCollectionViewDirection];
+    if([self.delegate respondsToSelector:@selector(moreClicked:)]){
+        [self.delegate moreClicked:YES];
+    }
+    
+//    if(![self isTEDemo]){
+//        for (UIButton *btn in _titleBtns) {
+//            [btn removeFromSuperview];
+//        }
+//        for (NSUInteger i = 0; i < _currentUIPropertyList.count; i++) {
+//            TEUIProperty *property = _currentUIPropertyList[i];
+//            if(property.teCategory != TECategory_BEAUTY && property.teCategory != TECategory_LUT){
+//                
+//            }
+//        }
+//    }
+    
+}
+
+- (UIView *)coverView{
+    if (!_coverView) {
+        _coverView = [[UIView alloc] init];
+        _coverView.backgroundColor = [UIColor blueColor];
+        _coverView.frame = CGRectMake(0, 0, ScreenWidth, ScreenHeight);
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(coverViewClick)];
+        [_coverView addGestureRecognizer:tapGesture];
+        _coverView.userInteractionEnabled = YES;
+    }
+    return _coverView;
+}
+
+- (void)switchCollectionViewDirection {
+    UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)self.beautyCollection.collectionViewLayout;
+    if (layout.scrollDirection == UICollectionViewScrollDirectionHorizontal) {
+        layout.scrollDirection = UICollectionViewScrollDirectionVertical; // 改为竖直方向
+    } else {
+        layout.scrollDirection = UICollectionViewScrollDirectionHorizontal; // 改为横向
+    }
+    [self.beautyCollection.collectionViewLayout invalidateLayout];
+}
+
+- (void)setMoreClick{
+    if (_moreClicked) {
+        _moreView.hidden = YES;
+        _resetView.hidden = YES;
+        _closeBottomView.hidden = YES;
+        _takePhoto.hidden = YES;
+    }else{
+        _moreView.hidden = NO;
+        _resetView.hidden = NO;
+        _closeBottomView.hidden = NO;
+        _takePhoto.hidden = NO;
+    }
+}
+
+- (void)lightMakeupClick{
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:@"" preferredStyle:UIAlertControllerStyleAlert];
     if (@available(iOS 13.0, *)) {
         alertController.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
     }
-    //修改title字体及颜色
-    NSMutableAttributedString *titleStr = [[NSMutableAttributedString alloc] initWithString:[[TEUIConfig shareInstance] localizedString:@"revert_tip_title"]];
+    NSMutableAttributedString *titleStr = [[NSMutableAttributedString alloc] initWithString:[[TEUIConfig shareInstance] localizedString:@"makeup_tip_title"]];
     [titleStr addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.9/1.0] range:NSMakeRange(0, titleStr.length)];
     [titleStr addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:20] range:NSMakeRange(0, titleStr.length)];
     [alertController setValue:titleStr forKey:@"attributedTitle"];
-    // 修改message字体及颜色
-    NSMutableAttributedString *messageStr = [[NSMutableAttributedString alloc] initWithString:[[TEUIConfig shareInstance] localizedString:@"revert_tip_msg"]];
+    NSMutableAttributedString *messageStr = [[NSMutableAttributedString alloc] initWithString:[[TEUIConfig shareInstance] localizedString:@"makeup_tip_msg"]];
     [messageStr addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.3/1.0] range:NSMakeRange(0, messageStr.length)];
     [messageStr addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:18] range:NSMakeRange(0, messageStr.length)];
     [alertController setValue:messageStr forKey:@"attributedMessage"];
-    // 添加UIAlertAction
-    UIAlertAction *sureAction = [UIAlertAction actionWithTitle:[[TEUIConfig shareInstance] localizedString:@"revert_tip_dialog_right_btn"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-        if(self.templateParam){
-            [self.tePanelDataProvider clearData];
-            [self templateParamClick];
-            [self setSubMenu:NO];
-        }else{
-            [self.tePanelDataProvider clearData];
-            for (UIButton *btn in self.titleBtns) {
-                [btn removeFromSuperview];
-            }
-            [self initData];
-            [self.titleBtns removeAllObjects];
-            [self addTabButtons:YES];
-            [self setSubMenu:NO];
-            [self.beautyCollection reloadData];
-            [self setBeauty:EFFECT_MOTION effectValue:0 resourcePath:nil extraInfo:nil save:YES];
-            [self setBeauty:EFFECT_SEGMENTATION effectValue:0 resourcePath:nil extraInfo:nil save:YES];
-            [self setBeauty:EFFECT_LUT effectValue:0 resourcePath:nil extraInfo:nil save:YES];
-            [self setBeauty:EFFECT_MAKEUP effectValue:0 resourcePath:nil extraInfo:nil save:YES];
-        }
-        self.makeupOrLut.hidden = YES;
-        self.teSlider.hidden = YES;
-        [self clearBeauty:[self.teBeautyKit getInUseSDKParamList]];
-        [self setDefaultBeauty];
+    UIAlertAction *sureAction = [UIAlertAction actionWithTitle:[[TEUIConfig shareInstance] localizedString:@"makeup_tip_click"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"te_lightmakeup"];
     }];
-    // KVC修改字体颜色
     [sureAction setValue:[UIColor colorWithRed:0 green:0x6e/255.0 blue:1 alpha:1] forKey:@"_titleTextColor"];
     [alertController addAction:sureAction];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:[[TEUIConfig shareInstance] localizedString:@"revert_tip_dialog_left_btn"] style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
@@ -1472,8 +1789,74 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
     }];
     [cancelAction setValue:[UIColor blackColor] forKey:@"_titleTextColor"];
     [alertController addAction:cancelAction];
-    [[self getControllerFromView:self] presentViewController:alertController animated:YES completion:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[self getControllerFromView:self] presentViewController:alertController animated:YES completion:nil];
+    });
 }
+
+- (void)resetClick{
+    if ([self.delegate respondsToSelector:@selector(onResetBtnClick)]) {
+        NSLog(@"用户已经实现了自定义重置功能");
+        [self.delegate onResetBtnClick];
+    }else{
+        // 初始化UIAlertController
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+        if (@available(iOS 13.0, *)) {
+            alertController.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
+        }
+        //修改title字体及颜色
+        NSMutableAttributedString *titleStr = [[NSMutableAttributedString alloc] initWithString:[[TEUIConfig shareInstance] localizedString:@"revert_tip_title"]];
+        [titleStr addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.9/1.0] range:NSMakeRange(0, titleStr.length)];
+        [titleStr addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:20] range:NSMakeRange(0, titleStr.length)];
+        [alertController setValue:titleStr forKey:@"attributedTitle"];
+        // 修改message字体及颜色
+        NSMutableAttributedString *messageStr = [[NSMutableAttributedString alloc] initWithString:[[TEUIConfig shareInstance] localizedString:@"revert_tip_msg"]];
+        [messageStr addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.3/1.0] range:NSMakeRange(0, messageStr.length)];
+        [messageStr addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:18] range:NSMakeRange(0, messageStr.length)];
+        [alertController setValue:messageStr forKey:@"attributedMessage"];
+        // 添加UIAlertAction
+        UIAlertAction *sureAction = [UIAlertAction actionWithTitle:[[TEUIConfig shareInstance] localizedString:@"revert_tip_dialog_right_btn"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+            [self performFullReset];
+        }];
+        // KVC修改字体颜色
+        [sureAction setValue:[UIColor colorWithRed:0 green:0x6e/255.0 blue:1 alpha:1] forKey:@"_titleTextColor"];
+        [alertController addAction:sureAction];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:[[TEUIConfig shareInstance] localizedString:@"revert_tip_dialog_left_btn"] style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            NSLog(@"取消");
+        }];
+        [cancelAction setValue:[UIColor blackColor] forKey:@"_titleTextColor"];
+        [alertController addAction:cancelAction];
+        [[self getControllerFromView:self] presentViewController:alertController animated:YES completion:nil];
+    }
+}
+
+- (void)performFullReset{
+    if(self.templateParam){
+        [self.tePanelDataProvider clearData];
+        [self templateParamClick];
+        [self setSubMenu:NO];
+    }else{
+        [self.tePanelDataProvider clearData];
+        for (UIButton *btn in self.titleBtns) {
+            [btn removeFromSuperview];
+        }
+        [self initData];
+        [self.titleBtns removeAllObjects];
+        [self addTabButtons:YES];
+        [self setSubMenu:NO];
+        [self setBeauty:EFFECT_LIGHT_MAKEUP effectValue:0 resourcePath:nil extraInfo:nil save:YES];
+        [self.beautyCollection reloadData];
+        [self setBeauty:EFFECT_MOTION effectValue:0 resourcePath:nil extraInfo:nil save:YES];
+        [self setBeauty:EFFECT_SEGMENTATION effectValue:0 resourcePath:nil extraInfo:nil save:YES];
+        [self setBeauty:EFFECT_LUT effectValue:0 resourcePath:nil extraInfo:nil save:YES];
+        [self setBeauty:EFFECT_MAKEUP effectValue:0 resourcePath:nil extraInfo:nil save:YES];
+    }
+    self.makeupOrLut.hidden = YES;
+    self.teSlider.hidden = YES;
+    [self clearBeauty:[self.teBeautyKit getInUseSDKParamList]];
+    [self setDefaultBeauty];
+}
+
 
 - (void)backViewClick{
     _beautyType = self.templateParam ? _templateType : 0;
@@ -1521,6 +1904,9 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
         self.commonView.hidden = YES;
         self.bottomView.hidden = NO;
         self.underView.hidden = YES;
+        if([self.delegate respondsToSelector:@selector(closeBottomView:)]){
+            [self.delegate closeBottomView:YES];
+        }
     }
 }
 
@@ -1565,7 +1951,12 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
 }
 
 - (void)updateBeautyEffect:(TEUIProperty *)teUIProperty{
+    _curProperty = teUIProperty;
     if(_currentUIPropertyList[_beautyType].teCategory == TECategory_BEAUTY){
+        if(self.lightMakeupUsed && [self.lightMakeupEffectNames containsObject:teUIProperty.sdkParam.effectName]){
+            [self clearLightMakeup];
+            self.lightMakeupUsed = NO;
+        }
         if(teUIProperty.sdkParam == nil){ //关闭美颜
             [self setUIState:_currentUIPropertyList[_beautyType].propertyList uiState:TEUIState_INIT];
             [self setBeautyWithTEUIPropertyList:_currentUIPropertyList[_beautyType].propertyList];
@@ -1576,6 +1967,7 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
                     [_teBeautyKit setEffect:sdkParam];
                 }
             }
+            teUIProperty.uiState = 2;
             [self.beautyCollection reloadData];
         }
         if(self.templateParam){
@@ -1602,6 +1994,10 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
         }
         [self setBeauty:teUIProperty.sdkParam.effectName effectValue:teUIProperty.sdkParam.effectValue resourcePath:teUIProperty.sdkParam.resourcePath extraInfo:nil save:YES];
     }else if(_currentUIProperty.teCategory == TECategory_LUT){
+        if(self.lightMakeupUsed){
+            [self clearLightMakeup];
+            self.lightMakeupUsed = NO;
+        }
         if ([TEUtils isURL:teUIProperty.resourceUri]) {
             NSString *path = [self fileExits:teUIProperty.resourceUri dirPath:_currentUIProperty.downloadPath];
             if (path != nil) {
@@ -1615,6 +2011,32 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
                 path = nil;
             }
             [self setBeauty:EFFECT_LUT effectValue:teUIProperty.sdkParam.effectValue resourcePath:path extraInfo:nil save:YES];
+        }
+    }else if (_currentUIProperty.teCategory == TECategory_LIGHTMAKEUP){
+        if (teUIProperty.resourceUri == nil) {
+            self.lightMakeupUsed = NO;
+        }else{
+            self.lightMakeupUsed = YES;
+        }
+        if ([TEUtils isURL:teUIProperty.resourceUri]) {
+            NSString *path = [self fileExits:teUIProperty.resourceUri dirPath:_currentUIProperty.downloadPath];
+            if (path != nil) {
+                NSString *makeupLutStrength = teUIProperty.sdkParam.extraInfo.makeupLutStrength;
+                NSMutableDictionary *extraInfo = [NSMutableDictionary dictionary];
+                extraInfo[@"makeupLutStrength"] = makeupLutStrength;
+                [self setBeauty:EFFECT_LIGHT_MAKEUP effectValue:teUIProperty.sdkParam.effectValue resourcePath:path extraInfo:extraInfo save:YES];
+            }else{
+                [self downloadRes:EFFECT_LIGHT_MAKEUP teUIProperty:teUIProperty];
+            }
+        }else{
+            NSString *path = [[[NSBundle mainBundle] pathForResource:@"lightMakeupRes" ofType:@"bundle"] stringByAppendingPathComponent:teUIProperty.resourceUri.lastPathComponent];
+            if (teUIProperty.resourceUri == nil) {
+                path = nil;
+            }
+            NSString *makeupLutStrength = teUIProperty.sdkParam.extraInfo.makeupLutStrength;
+            NSMutableDictionary *extraInfo = [NSMutableDictionary dictionary];
+            extraInfo[@"makeupLutStrength"] = makeupLutStrength;
+            [self setBeauty:EFFECT_LIGHT_MAKEUP effectValue:teUIProperty.sdkParam.effectValue resourcePath:path extraInfo:extraInfo save:YES];
         }
     }else if (_currentUIProperty.teCategory == TECategory_MOTION){
         if ([TEUtils isURL:teUIProperty.resourceUri]) {
@@ -1709,6 +2131,33 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
     }
 }
 
+//轻美妆NSDictionary
+-(NSMutableArray<NSString *> *)lightMakeupEffectNames{
+    if (!_lightMakeupEffectNames) {
+        _lightMakeupEffectNames = @[
+            BEAUTY_MOUTH_LIPSTICK,
+            BEAUTY_FACE_RED_CHEEK,
+            BEAUTY_FACE_SOFTLIGHT,
+            BEAUTY_FACE_EYE_SHADOW,
+            BEAUTY_FACE_EYE_LINER,
+            BEAUTY_FACE_EYELASH,
+            BEAUTY_FACE_EYE_SEQUINS,
+            BEAUTY_FACE_EYEBROW,
+            BEAUTY_FACE_EYEBALL,
+            BEAUTY_FACE_EYELIDS,
+            BEAUTY_FACE_EYEWOCAN,
+        ];
+    }
+    return _lightMakeupEffectNames;
+}
+
+- (void)clearLightMakeup{
+    for (NSString *effectName in self.lightMakeupEffectNames) {
+        [self setBeauty:effectName effectValue:0 resourcePath:nil extraInfo:nil save:YES];
+    }
+    [self setBeauty:EFFECT_LUT effectValue:0 resourcePath:nil extraInfo:nil save:YES];
+}
+
 -(void)clearBeauty:(NSMutableArray<TESDKParam *> *)sdkParams{
     for (TESDKParam *param in sdkParams) {
         [self setBeauty:param.effectName effectValue:0 resourcePath:param.resourcePath extraInfo:nil save:NO];
@@ -1724,7 +2173,7 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
         _segmentationType = 0;
         _segmentationResPath = path;
         [self openImagePicker];
-    }else if ([teUIProperty.sdkParam.extraInfo.segType isEqualToString:@"green_background"]){
+    }else if ([teUIProperty.sdkParam.extraInfo.segType isEqualToString:@"green_background"] || [teUIProperty.sdkParam.extraInfo.segType isEqualToString:@"green_background_v2"]){
         _segmentationType = 1;
         _segmentationResPath = path;
         [self greenscreenAlert];
@@ -1737,29 +2186,33 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
 }
 
 -(void)greenscreenAlert{
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:@"" preferredStyle:UIAlertControllerStyleAlert];
-    if (@available(iOS 13.0, *)) {
-        alertController.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
+    if ([self.delegate  respondsToSelector:@selector(onGreenscreenItemClick)]) {
+        [self.delegate onGreenscreenItemClick];
+    }else {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+        if (@available(iOS 13.0, *)) {
+            alertController.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
+        }
+        NSMutableAttributedString *titleStr = [[NSMutableAttributedString alloc] initWithString:[[TEUIConfig shareInstance] localizedString:@"greenscreen_import_picture"]];
+        [titleStr addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.9/1.0] range:NSMakeRange(0, titleStr.length)];
+        [titleStr addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:20] range:NSMakeRange(0, titleStr.length)];
+        [alertController setValue:titleStr forKey:@"attributedTitle"];
+        NSMutableAttributedString *messageStr = [[NSMutableAttributedString alloc] initWithString:[[TEUIConfig shareInstance] localizedString:@"greenscreen_msg"]];
+        [messageStr addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.3/1.0] range:NSMakeRange(0, messageStr.length)];
+        [messageStr addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:18] range:NSMakeRange(0, messageStr.length)];
+        [alertController setValue:messageStr forKey:@"attributedMessage"];
+        UIAlertAction *sureAction = [UIAlertAction actionWithTitle:[[TEUIConfig shareInstance] localizedString:@"greenscreen_import_picture"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+            [self openImagePicker];
+        }];
+        [sureAction setValue:[UIColor colorWithRed:0 green:0x6e/255.0 blue:1 alpha:1] forKey:@"_titleTextColor"];
+        [alertController addAction:sureAction];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:[[TEUIConfig shareInstance] localizedString:@"revert_tip_dialog_left_btn"] style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            NSLog(@"取消");
+        }];
+        [cancelAction setValue:[UIColor blackColor] forKey:@"_titleTextColor"];
+        [alertController addAction:cancelAction];
+        [[self getControllerFromView:self] presentViewController:alertController animated:YES completion:nil];
     }
-    NSMutableAttributedString *titleStr = [[NSMutableAttributedString alloc] initWithString:[[TEUIConfig shareInstance] localizedString:@"greenscreen_import_picture"]];
-    [titleStr addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.9/1.0] range:NSMakeRange(0, titleStr.length)];
-    [titleStr addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:20] range:NSMakeRange(0, titleStr.length)];
-    [alertController setValue:titleStr forKey:@"attributedTitle"];
-    NSMutableAttributedString *messageStr = [[NSMutableAttributedString alloc] initWithString:[[TEUIConfig shareInstance] localizedString:@"greenscreen_msg"]];
-    [messageStr addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.3/1.0] range:NSMakeRange(0, messageStr.length)];
-    [messageStr addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:18] range:NSMakeRange(0, messageStr.length)];
-    [alertController setValue:messageStr forKey:@"attributedMessage"];
-    UIAlertAction *sureAction = [UIAlertAction actionWithTitle:[[TEUIConfig shareInstance] localizedString:@"greenscreen_import_picture"] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-        [self openImagePicker];
-    }];
-    [sureAction setValue:[UIColor colorWithRed:0 green:0x6e/255.0 blue:1 alpha:1] forKey:@"_titleTextColor"];
-    [alertController addAction:sureAction];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:[[TEUIConfig shareInstance] localizedString:@"revert_tip_dialog_left_btn"] style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        NSLog(@"取消");
-    }];
-    [cancelAction setValue:[UIColor blackColor] forKey:@"_titleTextColor"];
-    [alertController addAction:cancelAction];
-    [[self getControllerFromView:self] presentViewController:alertController animated:YES completion:nil];
 }
 
 - (void)configSegmentation{
@@ -1767,6 +2220,8 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
     if(_segmentationType == 0){
         [extraInfo setValue:@"custom_background" forKey:@"segType"];
     }else{
+        //[extraInfo setValue:@"[0.8, 0.234, 0.9, 0.3125]" forKey:@"tex_protect_rect"];
+        //[extraInfo setValue:@"[0.513, 0.5, 1.0, 1.0]" forKey:@"green_params"];
         [extraInfo setValue:@"#0x00ff00" forKey:@"keyColor"];
         [extraInfo setValue:@"green_background" forKey:@"segType"];
     }
@@ -1776,14 +2231,19 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
 }
 
 -(void)openImagePicker{
-    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-    //资源类型为图片库
-    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    picker.mediaTypes =@[(NSString*)kUTTypeMovie, (NSString*)kUTTypeImage];
-    picker.delegate = self;
-    //设置选择后的图片可被编辑
-    picker.allowsEditing = NO;
-    [[self getControllerFromView:self] presentViewController:picker animated:YES completion:nil];
+    if ([self.delegate  respondsToSelector:@selector(onCustomSegBtnClick)]) {
+        [self.delegate onCustomSegBtnClick];//获取客户自己创建的图片选择器，必须继承UINavigationController
+    }else{
+        
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        //资源类型为图片库
+        picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        picker.mediaTypes =@[(NSString*)kUTTypeMovie, (NSString*)kUTTypeImage];
+        picker.delegate = self;
+        //设置选择后的图片可被编辑
+        picker.allowsEditing = NO;
+        [[self getControllerFromView:self] presentViewController:picker animated:YES completion:nil];
+    }
 }
 
 - (void)showLoading{
@@ -1828,7 +2288,7 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
      resourcePath:(NSString * _Nullable)resourcePath
         extraInfo:(NSDictionary * _Nullable)extraInfo
              save:(BOOL)save{
-    float multiple = 1.0;
+    float multiple = 1;
     if(self.enhancedMode && ([self isBeauty:effectName])){
         id value = [_tePanelDataProvider.enhancedMultipleDictionary valueForKey:effectName];
         if(value != nil){
@@ -1837,7 +2297,7 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
             multiple = 1.2;
         }
     }
-    [self.beautyKitApi setEffect:effectName effectValue:effectValue * multiple resourcePath:resourcePath extraInfo:extraInfo];
+    [self.teBeautyKit.xmagicApi setEffect:effectName effectValue:effectValue * multiple resourcePath:resourcePath extraInfo:extraInfo];
     if([self.delegate respondsToSelector:@selector(setEffect)]){
         [self.delegate setEffect];
     }
@@ -1903,7 +2363,7 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
         [param setValuesForKeysWithDictionary:dic];
         [effectList addObject:param];
     }
-    [self resetBeautyData:_currentUIPropertyList parentUIProperty:nil targetData:effectList];
+    [self resetBeautyData:_currentUIPropertyList targetData:effectList];
     __weak __typeof(self)weakSelf = self;
     dispatch_async(dispatch_get_main_queue(), ^{
         __strong typeof(self) strongSelf = weakSelf;
@@ -1911,43 +2371,19 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
     });
 }
 
-- (void)resetBeautyData:(NSMutableArray<TEUIProperty *>*)uiPropertyList parentUIProperty:(TEUIProperty *)parentUIProperty targetData:(NSMutableArray<TESDKParam *>*)targetData{
+- (void)resetBeautyData:(NSMutableArray<TEUIProperty *>*)uiPropertyList targetData:(NSMutableArray<TESDKParam *>*)targetData{
     if (uiPropertyList.count == 0 || targetData.count == 0) {
         return;
     }
     for (TEUIProperty *uiproperty in uiPropertyList) {
         if (uiproperty.propertyList.count > 0) {
-            [self resetBeautyData:uiproperty.propertyList parentUIProperty:uiproperty targetData:targetData];
+            [self resetBeautyData:uiproperty.propertyList targetData:targetData];
         }else{
             for (TESDKParam *sdkparam in targetData) {
-                if ([self.tePanelDataProvider.exclusionNoneGroup containsObject:uiproperty.sdkParam.effectName]) {
-                    if ([sdkparam.effectName isEqualToString:uiproperty.sdkParam.effectName]
-                        && [sdkparam.resourcePath isEqualToString:uiproperty.sdkParam.resourcePath]) {
-                        uiproperty.sdkParam.effectValue = sdkparam.effectValue;
-                        uiproperty.uiState = TEUIState_IN_USE;
-                        parentUIProperty.uiState = TEUIState_IN_USE;
-                        break;
-                    }else{
-                        uiproperty.uiState = TEUIState_INIT;
-                    }
+                if ([sdkparam.effectName isEqualToString:uiproperty.sdkParam.effectName]) {
+                    uiproperty.sdkParam.effectValue = sdkparam.effectValue;
                 }else{
-                    if (uiproperty.sdkParam.effectName.length > 0) {
-                        if ([sdkparam.effectName isEqualToString:uiproperty.sdkParam.effectName]) {
-                            uiproperty.sdkParam.effectValue = sdkparam.effectValue;
-                            uiproperty.uiState = TEUIState_IN_USE;
-                            break;
-                        }else{
-                            uiproperty.uiState = TEUIState_INIT;
-                        }
-                    }else{
-                        if ([uiproperty.resourceUri.lastPathComponent isEqualToString:sdkparam.resourcePath.lastPathComponent]) {
-                            uiproperty.sdkParam.effectValue = sdkparam.effectValue;
-                            uiproperty.uiState = TEUIState_IN_USE;
-                            break;
-                        }else{
-                            uiproperty.uiState = TEUIState_INIT;
-                        }
-                    }
+                    uiproperty.uiState = TEUIState_INIT;
                 }
             }
         }
@@ -1957,7 +2393,7 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
 - (void)setEnhancedMode:(BOOL)enhancedMode{
     _enhancedMode = enhancedMode;
     if(_enhancedMode){
-        [self.beautyKitApi enableEnhancedMode];
+        [self.teBeautyKit enableEnhancedMode:YES];
     }
     for (TESDKParam *param in _teBeautyKit.usedSDKParam) {
         if([self isBeauty:param.effectName]){
@@ -2025,15 +2461,22 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
     if(_currentUIProperty.propertyList[indexPath.row].propertyList.count == 0){
         if ([_abilityType isEqualToString:TEUI_MOTION_2D] ||
                   [_abilityType isEqualToString:TEUI_MOTION_3D] ||
+                  [_abilityType isEqualToString:TEUI_LIGHT_MOTION] ||
                   [_abilityType isEqualToString:TEUI_MOTION_GESTURE] ||
                   [_abilityType isEqualToString:TEUI_MOTION_CAMERA_MOVE] ||
-                  [_abilityType isEqualToString:TEUI_SEGMENTATION]){
+                  [_abilityType isEqualToString:TEUI_SEGMENTATION] ||
+                  [_abilityType isEqualToString:TEUI_LIGHT_MAKEUP]
+            ){
             for (TEUIProperty *teuiProperty in _currentUIPropertyList) {
                 for (TEUIProperty *property in teuiProperty.propertyList) {
                     if(property.uiState == TEUIState_CHECKED_AND_IN_USE){
                         property.uiState = TEUIState_INIT;
                     }
                 }
+            }
+        }else if ([_abilityType isEqualToString:TEUI_LUT]){
+            for (TEUIProperty *property in _currentUIProperty.propertyList) {
+                property.uiState = TEUIState_INIT;
             }
         }else{
             for (TEUIProperty *property in _currentUIProperty.propertyList) {
@@ -2056,7 +2499,7 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
         _currentUIProperty.propertyList[indexPath.row].uiState = TEUIState_CHECKED_AND_IN_USE;
         if(_currentUIProperty.propertyList[indexPath.row].sdkParam.numericalType){
             _teSlider.hidden = NO;
-            YTBeautyPropertyInfo *propertyInfo = [self.beautyKitApi getConfigPropertyWithName:_currentUIProperty.propertyList[indexPath.row].sdkParam.effectName];
+            YTBeautyPropertyInfo *propertyInfo = [self.teBeautyKit.xmagicApi getConfigPropertyWithName:_currentUIProperty.propertyList[indexPath.row].sdkParam.effectName];
             if(propertyInfo != nil){
                 _teSlider.minimumValue = [propertyInfo.minValue intValue];
                 _teSlider.maximumValue = [propertyInfo.maxValue intValue];
@@ -2069,21 +2512,21 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
             }else{
                 _teSlider.value = _currentUIProperty.propertyList[indexPath.row].sdkParam.effectValue;
             }
-            if(_currentUIProperty.teCategory == TECategory_MAKEUP && _currentUIProperty.propertyList[indexPath.row].sdkParam.extraInfo.makeupLutStrength != nil){
+            if((_currentUIProperty.teCategory == TECategory_MAKEUP || _currentUIProperty.teCategory == TECategory_LIGHTMAKEUP)&& _currentUIProperty.propertyList[indexPath.row].sdkParam.extraInfo.makeupLutStrength != nil){
                 self.makeupOrLut.hidden = NO;
                 if(self.makeupType == 1){
                     self.teSlider.value = [_currentUIProperty.propertyList[indexPath.row].sdkParam.extraInfo.makeupLutStrength intValue];
                 }
                 [self.teSlider mas_remakeConstraints:^(MASConstraintMaker *make) {
                     make.left.mas_equalTo(self).mas_offset(102);
-                    make.right.mas_equalTo(self).mas_offset(_showCompareBtn ? -45 : -10);
+                    make.right.mas_equalTo(self).mas_offset(-45);
                     make.centerY.mas_equalTo(self.compareButton.mas_centerY);
                 }];
             }else{
                 self.makeupOrLut.hidden = YES;
                 [self.teSlider mas_remakeConstraints:^(MASConstraintMaker *make) {
                     make.left.mas_equalTo(self).mas_offset(10);
-                    make.right.mas_equalTo(self).mas_offset(_showCompareBtn ? -45 : -10);
+                    make.right.mas_equalTo(self).mas_offset(-45);
                     make.centerY.mas_equalTo(self.compareButton.mas_centerY);
                 }];
             }
@@ -2092,6 +2535,9 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
             self.makeupOrLut.hidden = YES;
         }
         [self updateBeautyEffect:_currentUIProperty.propertyList[indexPath.row]];
+        if([self.delegate respondsToSelector:@selector(selectEffect:)]){
+            [self.delegate selectEffect:_curProperty];
+        }
         [self.beautyCollection reloadData];
     }else{
         _teSlider.hidden = YES;
@@ -2114,6 +2560,35 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
         animated:NO];
     }
 }
+
+
+
+//设置自定义背景分割或者自定义绿幕的 自定义（图片或视频）资源
+- (int)handleMediaAtPath:(NSString *)filePath {
+    int errorCode = 0;
+    // 判断文件类型（图片或视频）
+    NSString *extension = [[filePath pathExtension] lowercaseString];
+    NSArray *imageExtensions = @[@"png", @"jpg", @"jpeg"];
+    NSArray *videoExtensions = @[@"mp4", @"mov", @"avi"];
+    
+    if ([imageExtensions containsObject:extension]) {
+            _segmentationPath = filePath;
+            _timeOffset = @0;
+            _segmentationBgType = 0;
+            [self configSegmentation];
+    } else if ([videoExtensions containsObject:extension]) {
+        // 处理视频
+        NSURL *sourceURL = [NSURL fileURLWithPath:filePath];
+        NSDateFormatter *formater = [[NSDateFormatter alloc] init];
+        [formater setDateFormat:@"yyyy-MM-dd-HH.mm.ss"];
+        NSURL *newVideoUrl = [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingFormat:@"/Documents/output-%@.mp4", [formater stringFromDate:[NSDate date]]]];
+        errorCode = [self convertVideoQuailtyWithInputURL:sourceURL outputURL:newVideoUrl completeHandler:nil];
+    } else {
+        errorCode = 5004; // 不支持的格式
+    }
+    return errorCode;
+}
+
 
 
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
@@ -2316,6 +2791,17 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
     }
     // 如果没有找到则返回nil
     return nil;
+}
+
+
+- (void)didMoveToSuperview {
+    [super didMoveToSuperview];
+    if (_isLightMakeup) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self openLightMakeup];
+        });
+    }
+    
 }
 
 - (void)dealloc{

@@ -104,4 +104,13 @@
     }
 }
 
+- (NSDictionary *)toDictionary{
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+    [dictionary setValue:self.displayName forKey:@"displayName"];
+    [dictionary setValue:self.displayNameEn forKey:@"displayNameEn"];
+    [dictionary setValue:self.icon forKey:@"icon"];
+    return dictionary;
+    
+}
+
 @end

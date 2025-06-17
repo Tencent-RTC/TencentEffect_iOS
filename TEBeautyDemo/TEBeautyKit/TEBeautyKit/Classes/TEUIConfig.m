@@ -15,6 +15,7 @@
 @property(nonatomic, copy)NSString *lutPath;
 @property(nonatomic, copy)NSString *motionPath;
 @property(nonatomic, copy)NSString *makeupPath;
+@property(nonatomic, copy)NSString *lightMakeupPath;
 @property(nonatomic, copy)NSString *segmentationPath;
 @property(nonatomic, copy)NSString *resourcePath;
 @property(nonatomic, strong)NSBundle *resourceBundle;
@@ -42,14 +43,6 @@
         _resourceBundle = [NSBundle bundleWithPath:self.resourcePath];
     }
     return self;
-}
-
-- (void)setLightCoreBundlePath:(NSString *)corePath{
-    _lightCoreBundlePath = corePath;
-}
-
-- (NSString *)getLightCoreBundlePath{
-    return _lightCoreBundlePath;
 }
 
 - (NSString *)localizedString:(NSString *)key {
@@ -139,16 +132,18 @@
     NSString *motionJsonPath = [levelPath stringByAppendingPathComponent:@"motions.json"];
     NSString *makeupJsonPath = [levelPath stringByAppendingPathComponent:@"makeup.json"];
     NSString *segJsonPath = [levelPath stringByAppendingPathComponent:@"segmentation.json"];
-    [self setTEPanelViewRes:beautyJsonPath beautyBody:bodyJsonPath lut:lutJsonPath motion:motionJsonPath makeup:makeupJsonPath segmentation:segJsonPath];
+    NSString *lightMakeupJsonPath=[levelPath stringByAppendingPathComponent:@"light_makeup.json"];
+    [self setTEPanelViewRes:beautyJsonPath beautyBody:bodyJsonPath lut:lutJsonPath motion:motionJsonPath makeup:makeupJsonPath segmentation:segJsonPath lightMakeup:lightMakeupJsonPath];
 }
 
-- (void)setTEPanelViewRes:(NSString *)beauty beautyBody:(NSString *)beautyBody lut:(NSString *)lut motion:(NSString *)motion makeup:(NSString *)makeup segmentation:(NSString *)segmentation{
+- (void)setTEPanelViewRes:(NSString *)beauty beautyBody:(NSString *)beautyBody lut:(NSString *)lut motion:(NSString *)motion makeup:(NSString *)makeup segmentation:(NSString *)segmentation lightMakeup:(NSString *)lightMakeup{
     _beautyPath = beauty;
     _beautyBodyPath = beautyBody;
     _lutPath = lut;
     _motionPath = motion;
     _makeupPath = makeup;
     _segmentationPath = segmentation;
+    _lightMakeupPath = lightMakeup;
 }
 
 - (NSString *)getBeautyPath{
@@ -171,13 +166,17 @@
     return _makeupPath;
 }
 
+- (NSString *)getLightMakeupPath{
+    return _lightMakeupPath;
+}
+
 - (NSString *)getSegmentationPath{
     return _segmentationPath;
 }
 
 - (UIColor *)panelBackgroundColor{
     if(!_panelBackgroundColor){
-        _panelBackgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.7];
+        _panelBackgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.75];
     }
     return _panelBackgroundColor;
 }

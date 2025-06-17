@@ -21,6 +21,7 @@
 		C02115BF2BD8B2E80093A50E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C02115BD2BD8B2E80093A50E /* LaunchScreen.storyboard */; };
 		C02115C22BD8B2E80093A50E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C02115C12BD8B2E80093A50E /* main.m */; };
 		C0A1BDFE2BD927EC0097FD72 /* TECameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C0A1BDFD2BD927EC0097FD72 /* TECameraViewController.m */; };
+		CAEB70602E016D40002ED5A1 /* lightMakeupRes.bundle in Resources */ = {isa = PBXBuildFile; fileRef = CAEB705F2E016D40002ED5A1 /* lightMakeupRes.bundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,7 @@
 		C02115C12BD8B2E80093A50E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		C0A1BDFC2BD927EC0097FD72 /* TECameraViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TECameraViewController.h; sourceTree = "<group>"; };
 		C0A1BDFD2BD927EC0097FD72 /* TECameraViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TECameraViewController.m; sourceTree = "<group>"; };
+		CAEB705F2E016D40002ED5A1 /* lightMakeupRes.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = lightMakeupRes.bundle; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +91,7 @@
 		C02115AE2BD8B2E80093A50E /* TEBeautyDemo */ = {
 			isa = PBXGroup;
 			children = (
+				CAEB705F2E016D40002ED5A1 /* lightMakeupRes.bundle */,
 				C00F3FCF2BEB5BA7005B18C6 /* 2dMotionRes.bundle */,
 				C00F3FD02BEB5BA7005B18C6 /* 3dMotionRes.bundle */,
 				C00F3FD22BEB5BA7005B18C6 /* lut.bundle */,
@@ -183,6 +186,7 @@
 				C00F3FD62BEB5BA7005B18C6 /* segmentMotionRes.bundle in Resources */,
 				C02115BF2BD8B2E80093A50E /* LaunchScreen.storyboard in Resources */,
 				C00F3FD32BEB5BA7005B18C6 /* makeupMotionRes.bundle in Resources */,
+				CAEB70602E016D40002ED5A1 /* lightMakeupRes.bundle in Resources */,
 				C00F3FD42BEB5BA7005B18C6 /* 2dMotionRes.bundle in Resources */,
 				C02115BC2BD8B2E80093A50E /* Assets.xcassets in Resources */,
 				C02115BA2BD8B2E80093A50E /* Main.storyboard in Resources */,

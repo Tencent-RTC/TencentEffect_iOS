@@ -11,12 +11,12 @@
 "beauty_preview_txt" = "Live preview";
 "use_rear_camera" = "use rear camera";
 
-"xmagic_pannel_tab1" = "Beauty";
-"xmagic_pannel_tab2" = "Body";
-"xmagic_pannel_tab3" = "Lut";
-"xmagic_pannel_tab4" = "Motion";
-"xmagic_pannel_tab5" = "Makeup";
-"xmagic_pannel_tab6" = "Segmentation";
+//"xmagic_pannel_tab1" = "Beauty";
+//"xmagic_pannel_tab2" = "Body";
+//"xmagic_pannel_tab3" = "Lut";
+//"xmagic_pannel_tab4" = "Motion";
+//"xmagic_pannel_tab5" = "Makeup";
+//"xmagic_pannel_tab6" = "Segmentation";
 "save_picture_success" = "success";
 "save_picture_failed" = "Failed";
 "greenscreen_import_picture" = "import pictures";
@@ -24,6 +24,8 @@
 "pannel_performance_strongModle" = "enhanced mode";
 "pannel_white_only_skin" = "Brightening only applies to skin";
 "pannel_edge_crop" = "Cropping the edge of the screen";
+"pannel_face_block" = "Face occlusion detection\nPrevent makeup to be displayed on occluded objects";
+"material_purchase" = "Material purchase\nYou can add your favorite effects to the shopping cart";
 
 "pannel_performance_parameters" = "performance parameters";
 "panel_general_beauty" = "general beauty";
@@ -34,6 +36,7 @@
 "panel_lut" = "Filters";
 
 "revert_btn_txt" = "Reset";
+"more_btn_txt" = "more";
 "pannel_close_btn_txt" = "Off";
 "pannel_btn_open" = "open";
 "pannel_btn_close" = "close";
@@ -42,156 +45,159 @@
 "strength" = "strength";
 "revert_tip_title" = "Are you sure you want to reset";
 "revert_tip_msg" = "\n Reset will restore all current effects to default, irreversible";
+"makeup_tip_title" = "Tips";
+"makeup_tip_msg" = "\n Light makeup effects and single feature makeup effects cannot coexist; setting one will disable the other.";
+"makeup_tip_click" = "Don\'t prompt again";
 "revert_tip_dialog_left_btn" = "cancel";
 "revert_tip_dialog_right_btn" = "reset";
 "pannel_beauty_switch_open_txt" = "open beauty";
 "pannel_beauty_switch_close_txt" = "close beauty";
 
-"autohtin_body_strength_label" = "auto slimming";
-"body_leg_stretch_label" = "leg stretch";
-"body_slim_leg_strength_label" = "slim leg";
-"body_waish_strength_label"  = "thin waist";
-"body_thin_shoulder_strength_label" = "thin shoulders";
-"body_slim_head_strength_label" = "slim head";
+//"autohtin_body_strength_label" = "auto slimming";
+//"body_leg_stretch_label" = "leg stretch";
+//"body_slim_leg_strength_label" = "slim leg";
+//"body_waish_strength_label"  = "thin waist";
+//"body_thin_shoulder_strength_label" = "thin shoulders";
+//"body_slim_head_strength_label" = "slim head";
+//
+//"beauty_whiten_label" = "whiten";
+//"beauty_smooth_label" = "smooth";
+//"beauty_ruddy_label" = "rosy";
+//"image_contrast_label" = "contrast";
+//"image_saturation_label" = "saturation";
+//"image_sharpen_label" = "clear";
+//"beauty_enlarge_eye_label" = "enlarge eye";
+//"beauty_thin_face_label" = "thin face";
+//"beauty_thin_face1_label" = "nature";
+//"beauty_thin_face2_label" = "goddess";
+//"beauty_thin_face3_label" = "hansome";
+//"beauty_slim_jaw_label" = "slim jaw";
+//"beauty_v_face_label" = "V face";
+//"beauty_narrow_face_label" = "thin face";
+//"beauty_short_face_label" = "short face";
+//"beauty_basic_face_label" = "face style";
+//"beauty_lips_label" = "lipstick";
+//"beauty_lips1_label" = "old-style red";
+//"beauty_lips2_label" = "peach color";
+//"beauty_lips3_label" = "Coral Orange";
+//"beauty_lips4_label" = "gentle powder";
+//"beauty_lips5_label" = "vitality Orange";
+//"beauty_redcheeks_label" = "face blush";
+//"beauty_redcheeks1_label" = "simple";
+//"beauty_redcheeks2_label" = "midsummer";
+//"beauty_redcheeks3_label" = "shy";
+//"beauty_redcheeks4_label" = "mature";
+//"beauty_redcheeks5_label" = "freckle";
+//"beauty_liti_label" = "soft light";
+//"beauty_liti1_label" = "nature";
+//"beauty_liti2_label" = "handsome";
+//"beauty_liti3_label" = "light";
+//"beauty_liti4_label" = "fresh";
+//"beauty_thin_cheek_label" = "thin cheekbones";
+//"beauty_chin_label" = "jaw";
+//"beauty_forehead_label" ="forehead";
+//"beauty_eye_lighten_label" = "dazzling";
+//"beauty_eye_distance_label" = "eye distance";
+//"beauty_eye_angle_label" = "corner of eye";
+//"beauty_thin_nose_label" = "thin nose";
+//"beauty_nose_wing_label" = "Nose";
+//"beauty_nose_position_label" = "nose position";
+//"beauty_tooth_beauty_label" = "tooth";
+//"beauty_remove_pounch_label" = "wrinkle removal";
+//"beauty_wrinkle_smooth_label" = "remove nasal lines";
+//"beauty_remove_eye_pouch_label" = "remove eye bags";
+//"beauty_mouth_size_label" = "mouth size";
+//"beauty_mouth_height_label" = "mouth height";
+//
+//"item_none_label" = "none";
+//"lut_item1_label" = "white";
+//"lut_item2_label" = "nature";
+//"lut_item3_label" = "first love";
+//"lut_item4_label" = "heartbeat";
+//"lut_item5_label" = "tokyo";
+//
+//"motion_2d_label" = "2D motion";
+//"motion_3d_label" = "3D motion";
+//"motion_hand_label" = "gesture motion";
+//"motion_gan_label" = "interesting";
+//"segmentation_custom_label" = "custom segmentation";
+//"segmentation_greenscreen_label" = "greenscreen segmentation";
+//
+//"video_fenfenxia" = "peach makeup";
+//"video_guajiezhuang" = "vitality makeup";
+//"video_shuimitao" = "peach makeup";
+//"video_xiaohuazhuang" = "school flower makeup";
+//"video_shaishangzhuang" = "sunburn makeup";
+//"video_zhiganzhuang" = "texture makeup";
+//"video_nvtuanzhuang" = "girl group makeup";
+//"video_hongjiuzhuang" = "red wine makeup";
+//"video_xuejiezhuang" = "school sister makeup";
+//
+//"video_lianliancaomei" = "love strawberry";
+//"video_zuijiuweixun" = "drunk";
+//"video_tianxinmengniiu" = "sweetheart";
+//"video_litihuaduo" = "three-dimensional flowers";
+//"video_aiyimanman" = "full of love";
+//"video_keaituya" = "cute doodle";
+//"video_naipingmianmo" = "bottle mask";
+//"video_qiqiupaidui" = "Balloon Party";
+//"video_mengmengxiong" = "cute bear";
+//"video_aixinyanhua" = "love fireworks";
+//"video_xingganxiaochou" = "sexy clown";
+//"video_xiaohonghua" = "little safflower";
+//"video_qipaoshui" = "sparkling water";
+//"video_kangnaixin" = "Ambience Carnation";
+//"video_xiangsuyuzhou" = "Pixel Universe";
+//"video_shangtoule" = "up";
+//"video_xiaohongxing" = "little red star";
+//"video_xiaohuangmao" = "childlike duck hat";
+//"video_chudao" = "Debut in C position";
+//"video_fenweiqiehuan" = "atmosphere switch";
+//"video_bingjingaixin" = "ice crystal love";
+//"video_biaobai" = "confession";
+//"video_kawayixiaoxiong" = "Kawaii Bear";
+//"video_yaogunyue" = "shake music";
+//"video_rixishaonv" = "Japanese girl";
+//"video_tutujiang" = "bunny sauce";
+//"video_xuancainihong" = "colorful neon";
+//"video_kaixueqianhou" = "Before and after school";
+//"video_nightgown" = "Felt headband";
+//"video_xuanmeizhuang" = "vitality sticker";
+//"video_quebanzhuang" = "Japanese freckles makeup";
+//"video_lengliebingmo" = "cold icy pupil";
+//"video_dongriliange" = "winter love song";
+//"video_fugu_dv" = "Vintage DV";
+//"video_baozilian" = "bun face";
+//"video_boom" = "Dynamic Sunglasses";
+//"video_boys" = "flashing love";
+//"video_cherries" = "small cherry";
+//"video_guifeiface" = "Concubine face";
+//"video_heimaomi" = "cute meow";
+//"video_liuhaifadai" = "bangs hair band";
+//"video_otwogirl" = "polka dot girl";
+//"video_shuangmahua" = "double twist";
+//"video_egaoshuangwanzi" = "spoof double balls";
+//"video_yazi" = "shaking duck";
+//"video_tantanfagu" = "bouncy headband";
+//"video_ningmengyayamao" = "Lemon Duck Duck Cap";
+//"video_hudiejie" = "magic bow";
+//"video_maoxinvhai" = "cat girl";
+//"video_jinli" = "koi";
+//"video_zhixingmeigui" = "intellectual rose";
+//"video_tiankulamei" = "sweet cool babes";
+//"video_feitianzhuzhu" = "flying pig";
+//"video_tonghuagushi" = "A fairy tale";
+//"video_shoushiwu" = "finger bubbles";
+//"video_sakuragirl" = "sakura girl";
+//"video_bubblegum" = "childhood bubble gum";
+//"video_3DFace_springflower" = "Flower Fairy";
 
-"beauty_whiten_label" = "whiten";
-"beauty_smooth_label" = "smooth";
-"beauty_ruddy_label" = "rosy";
-"image_contrast_label" = "contrast";
-"image_saturation_label" = "saturation";
-"image_sharpen_label" = "clear";
-"beauty_enlarge_eye_label" = "enlarge eye";
-"beauty_thin_face_label" = "thin face";
-"beauty_thin_face1_label" = "nature";
-"beauty_thin_face2_label" = "goddess";
-"beauty_thin_face3_label" = "hansome";
-"beauty_slim_jaw_label" = "slim jaw";
-"beauty_v_face_label" = "V face";
-"beauty_narrow_face_label" = "thin face";
-"beauty_short_face_label" = "short face";
-"beauty_basic_face_label" = "face style";
-"beauty_lips_label" = "lipstick";
-"beauty_lips1_label" = "old-style red";
-"beauty_lips2_label" = "peach color";
-"beauty_lips3_label" = "Coral Orange";
-"beauty_lips4_label" = "gentle powder";
-"beauty_lips5_label" = "vitality Orange";
-"beauty_redcheeks_label" = "face blush";
-"beauty_redcheeks1_label" = "simple";
-"beauty_redcheeks2_label" = "midsummer";
-"beauty_redcheeks3_label" = "shy";
-"beauty_redcheeks4_label" = "mature";
-"beauty_redcheeks5_label" = "freckle";
-"beauty_liti_label" = "soft light";
-"beauty_liti1_label" = "nature";
-"beauty_liti2_label" = "handsome";
-"beauty_liti3_label" = "light";
-"beauty_liti4_label" = "fresh";
-"beauty_thin_cheek_label" = "thin cheekbones";
-"beauty_chin_label" = "jaw";
-"beauty_forehead_label" ="forehead";
-"beauty_eye_lighten_label" = "dazzling";
-"beauty_eye_distance_label" = "eye distance";
-"beauty_eye_angle_label" = "corner of eye";
-"beauty_thin_nose_label" = "thin nose";
-"beauty_nose_wing_label" = "Nose";
-"beauty_nose_position_label" = "nose position";
-"beauty_tooth_beauty_label" = "tooth";
-"beauty_remove_pounch_label" = "wrinkle removal";
-"beauty_wrinkle_smooth_label" = "remove nasal lines";
-"beauty_remove_eye_pouch_label" = "remove eye bags";
-"beauty_mouth_size_label" = "mouth size";
-"beauty_mouth_height_label" = "mouth height";
-
-"item_none_label" = "none";
-"lut_item1_label" = "white";
-"lut_item2_label" = "nature";
-"lut_item3_label" = "first love";
-"lut_item4_label" = "heartbeat";
-"lut_item5_label" = "tokyo";
-
-"motion_2d_label" = "2D motion";
-"motion_3d_label" = "3D motion";
-"motion_hand_label" = "gesture motion";
-"motion_gan_label" = "interesting";
-"segmentation_custom_label" = "custom segmentation";
-"segmentation_greenscreen_label" = "greenscreen segmentation";
-
-"video_fenfenxia" = "peach makeup";
-"video_guajiezhuang" = "vitality makeup";
-"video_shuimitao" = "peach makeup";
-"video_xiaohuazhuang" = "school flower makeup";
-"video_shaishangzhuang" = "sunburn makeup";
-"video_zhiganzhuang" = "texture makeup";
-"video_nvtuanzhuang" = "girl group makeup";
-"video_hongjiuzhuang" = "red wine makeup";
-"video_xuejiezhuang" = "school sister makeup";
-
-"video_lianliancaomei" = "love strawberry";
-"video_zuijiuweixun" = "drunk";
-"video_tianxinmengniiu" = "sweetheart";
-"video_litihuaduo" = "three-dimensional flowers";
-"video_aiyimanman" = "full of love";
-"video_keaituya" = "cute doodle";
-"video_naipingmianmo" = "bottle mask";
-"video_qiqiupaidui" = "Balloon Party";
-"video_mengmengxiong" = "cute bear";
-"video_aixinyanhua" = "love fireworks";
-"video_xingganxiaochou" = "sexy clown";
-"video_xiaohonghua" = "little safflower";
-"video_qipaoshui" = "sparkling water";
-"video_kangnaixin" = "Ambience Carnation";
-"video_xiangsuyuzhou" = "Pixel Universe";
-"video_shangtoule" = "up";
-"video_xiaohongxing" = "little red star";
-"video_xiaohuangmao" = "childlike duck hat";
-"video_chudao" = "Debut in C position";
-"video_fenweiqiehuan" = "atmosphere switch";
-"video_bingjingaixin" = "ice crystal love";
-"video_biaobai" = "confession";
-"video_kawayixiaoxiong" = "Kawaii Bear";
-"video_yaogunyue" = "shake music";
-"video_rixishaonv" = "Japanese girl";
-"video_tutujiang" = "bunny sauce";
-"video_xuancainihong" = "colorful neon";
-"video_kaixueqianhou" = "Before and after school";
-"video_nightgown" = "Felt headband";
-"video_xuanmeizhuang" = "vitality sticker";
-"video_quebanzhuang" = "Japanese freckles makeup";
-"video_lengliebingmo" = "cold icy pupil";
-"video_dongriliange" = "winter love song";
-"video_fugu_dv" = "Vintage DV";
-"video_baozilian" = "bun face";
-"video_boom" = "Dynamic Sunglasses";
-"video_boys" = "flashing love";
-"video_cherries" = "small cherry";
-"video_guifeiface" = "Concubine face";
-"video_heimaomi" = "cute meow";
-"video_liuhaifadai" = "bangs hair band";
-"video_otwogirl" = "polka dot girl";
-"video_shuangmahua" = "double twist";
-"video_egaoshuangwanzi" = "spoof double balls";
-"video_yazi" = "shaking duck";
-"video_tantanfagu" = "bouncy headband";
-"video_ningmengyayamao" = "Lemon Duck Duck Cap";
-"video_hudiejie" = "magic bow";
-"video_maoxinvhai" = "cat girl";
-"video_jinli" = "koi";
-"video_zhixingmeigui" = "intellectual rose";
-"video_tiankulamei" = "sweet cool babes";
-"video_feitianzhuzhu" = "flying pig";
-"video_tonghuagushi" = "A fairy tale";
-"video_shoushiwu" = "finger bubbles";
-"video_sakuragirl" = "sakura girl";
-"video_bubblegum" = "childhood bubble gum";
-"video_3DFace_springflower" = "Flower Fairy";
-
-"video_empty_segmentation" = "segmentation";
-"video_greenscreen" = "greenscreen";
-"video_segmentation_blur_45" = "blurred background-weak";
-"video_segmentation_blur_75" = "blurred background-severe";
-"video_segmentation_transparent_bg" = "transparent";
-"video_guaishoutuya" = "monster doodle";
+//"video_empty_segmentation" = "segmentation";
+//"video_greenscreen" = "greenscreen";
+//"video_segmentation_blur_45" = "blurred background-weak";
+//"video_segmentation_blur_75" = "blurred background-severe";
+//"video_segmentation_transparent_bg" = "transparent";
+//"video_guaishoutuya" = "monster doodle";
 
 "select_resource_label" = "resource type";
 "local_resource_label" = "assets";
@@ -228,13 +234,25 @@
 "avatar_no_manage" = "There are no saved images yet, please save them on the edit image page";
 
 "developer_mode" = "Setting";
-"high_performance_mode" = "High Performance Mode";
-"high_performance_description" = "After enabling the high-performance mode, the beauty filter uses less system CPU/GPU resources, which can reduce the heating and lagging of the phone, making it more suitable for long-term use on low-end devices.\n
-However, please note that after enabling the high-performance mode, the following beauty filter options will not be available:\n
-1.Eye: Eye width, Eye height, Eye bags\n
-2.Eyebrow: Eyebrow angle, Eyebrow distance, Eyebrow Height, Eyebrow Length, Eyebrow Thickness, Eyebrow ridge\n
-3.Mouth: Smile face\n
-4.Facial: Thin face (Natural, Woman, Man), Slim jaw, Wrinkles, Smile lines. It is recommended to use Face shape to achieve a comprehensive effect of big eyes and thin face";
+//"high_performance_mode" = "Tencent Effect Mode";
+//"high_performance_description" = "How to Choose a Effect Mode?\n
+//
+//1. Normal Mode: This mode provides common beauty and shaping capabilities, which can meet the needs of most live streaming scenarios. It has good performance and is suitable for long-term operation on mid-to-low-end devices.\n
+//2. Pro Mode: This mode offers richer beauty and shaping capabilities, providing extreme effects. However, it may cause lag or frame drops on low-end devices. It is recommended to use Pro Mode only on high-end devices (device level = 5).\n
+//
+//Pro Mode includes all the capabilities of Normal Mode and optimizes/adds the following features:\n
+//1. Beauty: More refined skin smoothing effects; added tanning capability.\n
+//2. Image Quality Adjustment: Added low-light noise reduction capability.\n
+//3. Facial Shaping: Added goddess face slimming, handsome face slimming; added face shape, chin reduction, nasolabial fold removal, wrinkle removal.\n
+//4. Eye Shaping: Added eye width, eye height, eye position, eye bag removal, eye brightening.\n
+//5. Eyebrow Shaping: Added eyebrow angle, distance, height, length, thickness, eyebrow peak.\n
+//6. Mouth Shaping: Added smile lips.\n
+//7. Nose Shaping: Added nose bridge, nasal root.\n
+//8. Makeup: Added hair dyeing.\n
+//9. Others: Whitening can be applied to skin only.\n
+//
+//The SDK uses Normal Mode by default. To use Pro Mode, please call the setEffectMode interface of XMagicApi to enable it.\n
+//For more information, please refer to the official documentation—>API Docs—>setEffect";
 
 "low_device_toast" = "The current device does not support 1080p";
 
@@ -256,3 +274,25 @@ However, please note that after enabling the high-performance mode, the followin
 "combo_not_support" = "This capability is not included in this edition";
 "smart_beauty" = "Smart beauty\nmatching weak beauty and makeup effects for men and babies";
 "downloading" = "downloading";
+//
+//"add_to_cart" = "add to the cart";
+//"already_purchased" = "already purchased";
+//"shopping_cart" = "shopping cart";
+//"shopping_cart_2d_motions" = "The current package comes with 10 2D stickers/mirror effects/light stickers";
+//"shopping_cart_3d_motions" = "The current package includes 3D stickers";
+//"shopping_cart_makeups" = "The current package includes 3 Light Makeup/Full Makeup";
+//"shopping_cart_hand_motions" = "The current package includes 1 gesture sticker";
+//"shopping_cart_segmentations" = "The current package includes 3 virtual backgrounds";
+//"shopping_cart_luts" = "The current package includes 20 filters";
+//"shopping_cart_3d_motion_title" = "3D(Selected %d/3)";
+//"shopping_cart_hand_motion_title" = "Gesture Sticker(Selected %d/1)";
+//"shopping_cart_segmentation_title" = "Virtual Background(Selected %d/3)";
+//"shopping_cart_lut_title" = "Filters(Selected %d/20)";
+//"shopping_cart_makeup_title" = "Light Makeup/Full Makeup(Selected %d/3)";
+//"shopping_cart_2d_motion_title" = "2D/Camera Move/Light Motion (Selected %d/10)";
+//"shopping_cart_totle_count" = "Total: %d items of material";
+//"shopping_cart_tips" = "Tips: After purchasing the package, you can share the selected special effects resources with the Tencent Cloud architect or sales personnel who are coordinating with you. We will deliver them to you promptly.";
+//"shopping_cart_share_material_info" = "Share material information";
+//"shopping_cart_copy_material_info" =  "Copy material information";
+//"shopping_cart_delete" = "delete";
+//"shopping_cart_none" = "No need to select blank materials";
