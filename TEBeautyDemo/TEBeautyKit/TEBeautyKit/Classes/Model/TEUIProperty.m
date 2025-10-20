@@ -81,6 +81,7 @@
         NSMutableArray<TEUIProperty *> *propertyList = [NSMutableArray array];
         for (NSDictionary *info in value) {
             TEUIProperty *teUiProperty = [[TEUIProperty alloc] init];
+            teUiProperty.teCategory = self.teCategory;
             [teUiProperty setValuesForKeysWithDictionary:info];
             [propertyList addObject:teUiProperty];
         }
@@ -111,6 +112,25 @@
     [dictionary setValue:self.icon forKey:@"icon"];
     return dictionary;
     
+}
+
++ (void)setAbilityType:(NSString *)abilityType forMode:(TEUIProperty *)mode {
+    // 检查 mode 是否为 nil
+    if (!mode) {
+        return;
+    }
+  
+    if(mode.sdkParam) {
+        mode.sdkParam.abilityType = abilityType;
+    }
+    mode.abilityType = abilityType;
+    // 检查 mode.propertyList 是否为 nil
+    if (mode.propertyList) {
+        // 递归设置 mode.propertyList 中每个子对象的 abilityType
+        for (TEUIProperty *item in mode.propertyList) {
+            [TEUIProperty setAbilityType:abilityType forMode:item];
+        }
+    }
 }
 
 @end

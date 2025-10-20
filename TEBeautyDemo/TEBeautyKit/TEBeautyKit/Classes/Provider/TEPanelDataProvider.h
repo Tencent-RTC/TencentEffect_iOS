@@ -6,30 +6,30 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "../Model/TEUIProperty.h"
+#import "TEUIProperty.h"
 
 //demo_ability_menu的abilityType字段
-#define BEAUTY_TEMPLATE          @"BEAUTY_TEMPLATE"
-#define BEAUTY                   @"BEAUTY"
+#define BEAUTY_TEMPLATE          @"BEAUTY_TEMPLATE"///<美颜模板
+#define BEAUTY                   @"BEAUTY"///<美颜
 #define BEAUTY_BASIC             @"BEAUTY_BASIC"
-#define BEAUTY_SHAPE             @"BEAUTY_SHAPE"
+#define BEAUTY_SHAPE             @"BEAUTY_SHAPE"///<美型
 #define BEAUTY_GENERAL           @"BEAUTY_GENERAL"
-#define BEAUTY_IMAGE             @"BEAUTY_IMAGE"
-#define LUT                      @"LUT"
-#define BEAUTY_MAKEUP            @"BEAUTY_MAKEUP"
-#define LIGHT_MAKEUP             @"LIGHT_MAKEUP"
-#define MAKEUP                   @"MAKEUP"
-#define LIGHT_MOTION             @"LIGHT_MOTION"
-#define MOTION_2D                @"MOTION_2D"
-#define MOTION_3D                @"MOTION_3D"
-#define MOTION_GESTURE           @"MOTION_GESTURE"
-#define SEGMENTATION             @"SEGMENTATION"
+#define BEAUTY_IMAGE             @"BEAUTY_IMAGE"///<画质调整
+#define LUT                      @"LUT"///<滤镜
+#define BEAUTY_MAKEUP            @"BEAUTY_MAKEUP"///<单点美妆
+#define LIGHT_MAKEUP             @"LIGHT_MAKEUP"///<轻美妆
+#define MAKEUP                   @"MAKEUP"///<风格整装
+#define LIGHT_MOTION             @"LIGHT_MOTION"///<贴纸
+#define MOTION_2D                @"MOTION_2D"///<2D贴纸
+#define MOTION_3D                @"MOTION_3D"///<3D贴纸
+#define MOTION_GESTURE           @"MOTION_GESTURE"///<手势贴纸
+#define SEGMENTATION             @"SEGMENTATION"///<虚拟背景
 #define MOTION_CAMERA_MOVE       @"MOTION_CAMERA_MOVE"
-#define BEAUTY_BODY              @"BEAUTY_BODY"
-#define AVATAR                   @"AVATAR"
-#define GESTURE_DETECTION        @"GESTURE_DETECTION"
+#define BEAUTY_BODY              @"BEAUTY_BODY"///<美体
+#define AVATAR                   @"AVATAR"///<虚拟形象
+#define GESTURE_DETECTION        @"GESTURE_DETECTION"///<手势识别
 #define PORTRAIT_SEGMENTATION    @"PORTRAIT_SEGMENTATION"
-#define FACE_DETECTION           @"FACE_DETECTION"
+#define FACE_DETECTION           @"FACE_DETECTION"///<人脸检测
 
 @interface TEPanelDataProvider : NSObject
 
@@ -46,7 +46,7 @@
 //原子能力
 @property (nonatomic ,strong) NSMutableArray<NSString *> *capabilitiesArray;
 //美颜互斥组合
-@property (nonatomic ,strong) NSArray<NSString *> *exclusionGroup ;
+@property (nonatomic ,strong) NSArray<NSArray<NSString *> *> *exclusionGroup ;
 @property (nonatomic ,strong) NSArray<NSString *> *exclusionNoneGroup ;
 //增强模式倍率
 @property (nonatomic ,strong) NSMutableDictionary *enhancedMultipleDictionary ;

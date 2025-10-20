@@ -16,4 +16,6 @@
 
 + (CGFloat)textWidthFromTitle:(NSString *)title font:(UIFont *)font;
 
+// UIImage固定方向UIImageOrientationUp
++ (UIImage *)fixOrientation:(UIImage*)image;
 @end

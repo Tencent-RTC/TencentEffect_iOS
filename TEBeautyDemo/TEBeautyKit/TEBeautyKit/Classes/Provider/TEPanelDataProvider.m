@@ -105,8 +105,9 @@
             return nil;
         }
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_BEAUTY;
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: BEAUTY forMode:uiproperty];
         _beautyPanelData = uiproperty;
     }
     return _beautyPanelData;
@@ -119,8 +120,9 @@
             return nil;
         }
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_BEAUTY;
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: BEAUTY_BODY forMode:uiproperty];
         _beautyBodyPanelData = uiproperty;
     }
     return _beautyBodyPanelData;
@@ -133,8 +135,9 @@
             return nil;
         }
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_LUT;
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: LUT forMode:uiproperty];
         _lutPanelData = uiproperty;
     }
     return _lutPanelData;
@@ -147,11 +150,9 @@
             return nil;
         }
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_MOTION;
-        for (TEUIProperty *property in uiproperty.propertyList) {
-            property.teCategory = TECategory_MOTION;
-        }
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: LIGHT_MOTION forMode:uiproperty];
         _motionPanelData = uiproperty;
     }
     return _motionPanelData;
@@ -164,8 +165,9 @@
             return nil;
         }
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_MAKEUP;
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: MAKEUP forMode:uiproperty];
         _makeupPanelData = uiproperty;
     }
     return _makeupPanelData;
@@ -178,8 +180,9 @@
             return nil;
         }
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_LIGHTMAKEUP;
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: LIGHT_MAKEUP forMode:uiproperty];
         _lightMakeupPanelData = uiproperty;
     }
     return _lightMakeupPanelData;
@@ -192,8 +195,9 @@
             return nil;
         }
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_SEGMENTATION;
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: SEGMENTATION forMode:uiproperty];
         _segmentationPanelData = uiproperty;
     }
     return _segmentationPanelData;
@@ -236,8 +240,9 @@
     if (!_beautyBaseShapeData) {
         NSDictionary *dic = [self readLocalFileWithName:@"beauty_base_shape"];
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_BEAUTY;
+        uiproperty.abilityType = BEAUTY_BASIC;
+        [uiproperty setValuesForKeysWithDictionary:dic];
         _beautyBaseShapeData = uiproperty;
     }
     return _beautyBaseShapeData;
@@ -247,8 +252,9 @@
     if (!_beautyBodyData) {
         NSDictionary *dic = [self readLocalFileWithName:@"beauty_body"];
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_BEAUTY;
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: BEAUTY_BODY forMode:uiproperty];
         _beautyBodyData = uiproperty;
     }
     return _beautyBodyData;
@@ -258,8 +264,9 @@
     if (!_beautyGeneralShapeData) {
         NSDictionary *dic = [self readLocalFileWithName:@"beauty_general_shape"];
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_BEAUTY;
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: BEAUTY_GENERAL forMode:uiproperty];
         _beautyGeneralShapeData = uiproperty;
     }
     return _beautyGeneralShapeData;
@@ -269,8 +276,9 @@
     if (!_beautyImageData) {
         NSDictionary *dic = [self readLocalFileWithName:@"beauty_image"];
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_BEAUTY;
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: BEAUTY_IMAGE forMode:uiproperty];
         _beautyImageData = uiproperty;
     }
     return _beautyImageData;
@@ -280,8 +288,9 @@
     if (!_beautyMakeupData) {
         NSDictionary *dic = [self readLocalFileWithName:@"beauty_makeup"];
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_BEAUTY;
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: BEAUTY_MAKEUP forMode:uiproperty];
         _beautyMakeupData = uiproperty;
     }
     return _beautyMakeupData;
@@ -291,8 +300,9 @@
     if (!_beautyShapeData) {
         NSDictionary *dic = [self readLocalFileWithName:@"beauty_shape"];
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_BEAUTY;
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: BEAUTY_SHAPE forMode:uiproperty];
         _beautyShapeData = uiproperty;
     }
     return _beautyShapeData;
@@ -302,8 +312,9 @@
     if (!_beautyTemplateData) {
         NSDictionary *dic = [self readLocalFileWithName:@"beauty_template"];
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_TEMPLATE;
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: BEAUTY_TEMPLATE forMode:uiproperty];
         _beautyTemplateData = uiproperty;
     }
     return _beautyTemplateData;
@@ -313,8 +324,9 @@
     if (!_beautyData) {
         NSDictionary *dic = [self readLocalFileWithName:@"beauty"];
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_BEAUTY;
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: BEAUTY forMode:uiproperty];
         _beautyData = uiproperty;
     }
     return _beautyData;
@@ -324,8 +336,9 @@
     if (!_lutData) {
         NSDictionary *dic = [self readLocalFileWithName:@"lut"];
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_LUT;
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: LUT forMode:uiproperty];
         _lutData = uiproperty;
     }
     return _lutData;
@@ -335,9 +348,9 @@
     if (!_makeupData) {
         NSDictionary *dic = [self readLocalFileWithName:@"makeup"];
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_MAKEUP;
-        uiproperty.abilityType = @"MAKEUP";
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: MAKEUP forMode:uiproperty];
         _makeupData = uiproperty;
     }
     return _makeupData;
@@ -347,9 +360,9 @@
     if (!_lightMakeupData) {
         NSDictionary *dic = [self readLocalFileWithName:@"light_makeup"];
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_LIGHTMAKEUP;
-        uiproperty.abilityType = @"LIGHT_MAKEUP";
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: LIGHT_MAKEUP forMode:uiproperty];
         _lightMakeupData = uiproperty;
     }
     return _lightMakeupData;
@@ -359,9 +372,9 @@
     if (!_lightMotionData) {
         NSDictionary *dic = [self readLocalFileWithName:@"light_motion"];
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_MOTION;
-        uiproperty.abilityType = @"LIGHT_MOTION";
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: LIGHT_MOTION forMode:uiproperty];
         _lightMotionData = uiproperty;
     }
     return _lightMotionData;
@@ -371,9 +384,9 @@
     if (!_motion2dData) {
         NSDictionary *dic = [self readLocalFileWithName:@"motion_2d"];
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_MOTION;
-        uiproperty.abilityType = @"MOTION_2D";
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: MOTION_2D forMode:uiproperty];
         _motion2dData = uiproperty;
     }
     return _motion2dData;
@@ -383,9 +396,9 @@
     if (!_motion3dData) {
         NSDictionary *dic = [self readLocalFileWithName:@"motion_3d"];
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_MOTION;
-        uiproperty.abilityType = @"MOTION_3D";
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: MOTION_3D forMode:uiproperty];
         _motion3dData = uiproperty;
     }
     return _motion3dData;
@@ -395,9 +408,9 @@
     if (!_motionGestureData) {
         NSDictionary *dic = [self readLocalFileWithName:@"motion_gesture"];
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_MOTION;
-        uiproperty.abilityType = @"MOTION_GESTURE";
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: MOTION_GESTURE forMode:uiproperty];
         _motionGestureData = uiproperty;
     }
     return _motionGestureData;
@@ -407,9 +420,9 @@
     if (!_motionCameraMoveData) {
         NSDictionary *dic = [self readLocalFileWithName:@"motion_camera_move"];
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_MOTION;
-        uiproperty.abilityType = @"MOTION_CAMERA_MOVE";
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: MOTION_CAMERA_MOVE forMode:uiproperty];
         _motionCameraMoveData = uiproperty;
     }
     return _motionCameraMoveData;
@@ -419,9 +432,9 @@
     if (!_portraitSegmentationData) {
         NSDictionary *dic = [self readLocalFileWithName:@"portrait_segmentation"];
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_SEGMENTATION;
-        uiproperty.abilityType = @"SEGMENTATION";
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: SEGMENTATION forMode:uiproperty];
         _portraitSegmentationData = uiproperty;
     }
     return _portraitSegmentationData;
@@ -431,9 +444,9 @@
     if (!_segmentationData) {
         NSDictionary *dic = [self readLocalFileWithName:@"segmentation"];
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_SEGMENTATION;
-        uiproperty.abilityType = @"SEGMENTATION";
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: SEGMENTATION forMode:uiproperty];
         _segmentationData = uiproperty;
     }
     return _segmentationData;
@@ -443,8 +456,9 @@
     if (!_templateBeautyData) {
         NSDictionary *dic = [self readLocalFileWithName:@"beauty"];
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_BEAUTY;
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: BEAUTY forMode:uiproperty];
         _templateBeautyData = uiproperty;
     }
     return _templateBeautyData;
@@ -454,8 +468,9 @@
     if (!_templateBeautyImageData) {
         NSDictionary *dic = [self readLocalFileWithName:@"beauty_image"];
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_BEAUTY;
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: BEAUTY_IMAGE forMode:uiproperty];
         _templateBeautyImageData = uiproperty;
     }
     return _templateBeautyImageData;
@@ -465,8 +480,9 @@
     if (!_templateBeautyShapeData) {
         NSDictionary *dic = [self readLocalFileWithName:@"beauty_shape"];
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_BEAUTY;
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: BEAUTY_SHAPE forMode:uiproperty];
         _templateBeautyShapeData = uiproperty;
     }
     return _templateBeautyShapeData;
@@ -476,8 +492,9 @@
     if (!_templateBeautyMakeupData) {
         NSDictionary *dic = [self readLocalFileWithName:@"beauty_makeup"];
         TEUIProperty *uiproperty = [TEUIProperty new];
-        [uiproperty setValuesForKeysWithDictionary:dic];
         uiproperty.teCategory = TECategory_BEAUTY;
+        [uiproperty setValuesForKeysWithDictionary:dic];
+        [TEUIProperty setAbilityType: BEAUTY_MAKEUP forMode:uiproperty];
         _templateBeautyMakeupData = uiproperty;
     }
     return _templateBeautyMakeupData;
@@ -678,16 +695,16 @@
     return _makeupOfCombos;
 }
 
-- (NSArray<NSString *> *)exclusionGroup{
+- (NSArray<NSArray<NSString *> *> *)exclusionGroup{
     if(!_exclusionGroup){
         _exclusionGroup = @
-        [BEAUTY_WHITEN0,BEAUTY_WHITEN,BEAUTY_WHITEN2,BEAUTY_WHITEN3,
-         BEAUTY_BLACK1,BEAUTY_BLACK2,
-         BEAUTY_SMOOTH,BEAUTY_SMOOTH2,BEAUTY_SMOOTH3,BEAUTY_SMOOTH4,
-         BEAUTY_FACE_NATURE,BEAUTY_FACE_GODNESS,BEAUTY_FACE_MALE_GOD,
-         BEAUTY_MOUTH_LIPSTICK,BEAUTY_FACE_RED_CHEEK,BEAUTY_FACE_SOFTLIGHT,
-         BEAUTY_FACE_EYE_SHADOW,BEAUTY_FACE_EYE_LINER,BEAUTY_FACE_EYELASH,
-         BEAUTY_FACE_EYE_SEQUINS,BEAUTY_FACE_EYEBALL,BEAUTY_HAIR_COLOR_LUT
+        [@[BEAUTY_WHITEN0,BEAUTY_WHITEN,BEAUTY_WHITEN2,BEAUTY_WHITEN3],
+         @[BEAUTY_BLACK1,BEAUTY_BLACK2],
+         @[BEAUTY_SMOOTH,BEAUTY_SMOOTH2,BEAUTY_SMOOTH3,BEAUTY_SMOOTH4],
+         @[BEAUTY_FACE_NATURE,BEAUTY_FACE_GODNESS,BEAUTY_FACE_MALE_GOD],
+         @[BEAUTY_MOUTH_LIPSTICK,BEAUTY_FACE_RED_CHEEK,BEAUTY_FACE_SOFTLIGHT],
+         @[BEAUTY_FACE_EYE_SHADOW,BEAUTY_FACE_EYE_LINER,BEAUTY_FACE_EYELASH],
+         @[BEAUTY_FACE_EYE_SEQUINS,BEAUTY_FACE_EYEBALL,BEAUTY_HAIR_COLOR_LUT]
         ];
     }
     return _exclusionGroup;
