@@ -64,6 +64,9 @@
         self.pointView.hidden = NO;
         self.coverView.backgroundColor = [UIColor clearColor];
     }
+    if (_teUIProperty.teCategory != TECategory_BEAUTY) {
+        self.pointView.hidden = YES;
+    }
 }
 
 -(BOOL)isItemInUse:(TEUIProperty *)teUIProperty{

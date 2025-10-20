@@ -46,6 +46,7 @@ typedef NS_ENUM(NSUInteger, TECategory) {
 
 @property(nonatomic,copy)NSString *effectName;
 @property(nonatomic,assign)int effectValue;
+@property(nonatomic,copy)NSString *abilityType;
 @property(nonatomic,copy)NSString *resourcePath;
 @property(nonatomic,assign)BOOL numericalType;//是否是数值型
 @property(nonatomic,strong)ExtraInfo *extraInfo;
@@ -63,7 +64,7 @@ typedef NS_ENUM(NSUInteger, TECategory) {
 @property(nonatomic,copy)NSString *icon;
 @property(nonatomic,copy)NSString *downloadPath;
 @property(nonatomic,copy)NSString *resourceUri;
-@property(nonatomic,assign)int uiState;
+@property(nonatomic,assign)TEUIState uiState;
 @property(nonatomic,strong)NSMutableArray<TEUIProperty *> *propertyList;
 @property(nonatomic,strong)TESDKParam *sdkParam;
 @property(nonatomic,assign)TECategory teCategory;
@@ -80,5 +81,5 @@ typedef NS_ENUM(NSUInteger, TECategory) {
 
 - (instancetype)initWithDict:(NSDictionary *)dict;
 - (NSDictionary *)toDictionary;
-
++ (void)setAbilityType:(NSString *)abilityType forMode:(TEUIProperty *)mode;
 @end

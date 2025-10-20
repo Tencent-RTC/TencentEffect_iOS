@@ -93,9 +93,9 @@ typedef NS_ENUM(NSUInteger, PreviewResolution) {
 //    NSString *level = @"S1_07";
 //
 //
-//
+//    
 //    NSString *levelPath = [resourcePath stringByAppendingPathComponent:level];
-//
+//    
 //    NSString *beautyJsonPath = [levelPath stringByAppendingPathComponent:@"beauty.json"];
 //    NSString *bodyJsonPath = [levelPath stringByAppendingPathComponent:@"beauty_body.json"];
 //    NSString *lutJsonPath = [levelPath stringByAppendingPathComponent:@"lut.json"];
@@ -103,7 +103,7 @@ typedef NS_ENUM(NSUInteger, PreviewResolution) {
 ////    NSString *makeupJsonPath = [levelPath stringByAppendingPathComponent:@"makeup.json"];
 //    NSString *lightMakeupJsonPath = [levelPath stringByAppendingPathComponent:@"light_makeup.json"];
 //    NSString *segJsonPath = [levelPath stringByAppendingPathComponent:@"segmentation.json"];
-//
+//    
 //    [[TEUIConfig shareInstance] setTEPanelViewRes:beautyJsonPath beautyBody:bodyJsonPath lut:lutJsonPath motion:motionJsonPath makeup:nil segmentation:segJsonPath lightMakeup:lightMakeupJsonPath];
     [[TEUIConfig shareInstance] setPanelLevel:S1_07]; // 配置面板显示级别
 }

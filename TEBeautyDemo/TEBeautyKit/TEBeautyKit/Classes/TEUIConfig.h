@@ -44,6 +44,8 @@ typedef NS_ENUM(NSUInteger, TEPanelLevel) {
 //进度条颜色
 @property(nonatomic,strong)UIColor *seekBarProgressColor;
 
+@property (nonatomic, assign) BOOL isPanelTitleCentered;
+
 + (instancetype)shareInstance;
 /**
  beauty:美颜json路径
