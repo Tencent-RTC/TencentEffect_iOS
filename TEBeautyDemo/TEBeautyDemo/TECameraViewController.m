@@ -80,39 +80,51 @@ typedef NS_ENUM(NSUInteger, PreviewResolution) {
 
 - (TEPanelView *)tePanelView {
     if (!_tePanelView) {
-        _tePanelView = [[TEPanelView alloc] init:nil comboType:nil];
+        _tePanelView = [[TEPanelView alloc] init];
         _tePanelView.delegate = self;
     }
     return _tePanelView;
 }
 
 - (void)initBeautyJson {
+    NSBundle *bundle = [NSBundle mainBundle];
+    NSString *beautyTemplateJsonPath = [bundle pathForResource:@"beauty_template_ios" ofType:@"json"];
+    NSString *lightMakeupJsonPath = [bundle pathForResource:@"light_makeup" ofType:@"json"];
+    NSString *beautyJsonPath = [bundle pathForResource:@"beauty" ofType:@"json"];
+    NSString *beautyShapeJsonPath = [bundle pathForResource:@"beauty_shape" ofType:@"json"];
+    NSString *beautyImageJsonPath = [bundle pathForResource:@"beauty_image" ofType:@"json"];
+    NSString *beautyMakeupJsonPath = [bundle pathForResource:@"beauty_makeup" ofType:@"json"];
+    NSString *lutJsonPath = [bundle pathForResource:@"lut" ofType:@"json"];
+    NSString *beautyBodyJsonPath = [bundle pathForResource:@"beauty_body" ofType:@"json"];
+    NSString *motion2dJsonPath = [bundle pathForResource:@"motion_2d" ofType:@"json"];
+    NSString *motion3dJsonPath = [bundle pathForResource:@"motion_3d" ofType:@"json"];
+    NSString *motionHandJsonPath = [bundle pathForResource:@"motion_gesture" ofType:@"json"];
+    NSString *makeupJsonPath = [bundle pathForResource:@"makeup" ofType:@"json"];
+    NSString *segmentationJsonPath = [bundle pathForResource:@"segmentation" ofType:@"json"];
     
-//    NSString *resourcePath = [[NSBundle mainBundle]
-//    pathForResource:@"TEBeautyKitResources" ofType:@"bundle"];
-//    NSString *level = @"S1_07";
-//
-//
-//    
-//    NSString *levelPath = [resourcePath stringByAppendingPathComponent:level];
-//    
-//    NSString *beautyJsonPath = [levelPath stringByAppendingPathComponent:@"beauty.json"];
-//    NSString *bodyJsonPath = [levelPath stringByAppendingPathComponent:@"beauty_body.json"];
-//    NSString *lutJsonPath = [levelPath stringByAppendingPathComponent:@"lut.json"];
-//    NSString *motionJsonPath = [levelPath stringByAppendingPathComponent:@"motions.json"];
-////    NSString *makeupJsonPath = [levelPath stringByAppendingPathComponent:@"makeup.json"];
-//    NSString *lightMakeupJsonPath = [levelPath stringByAppendingPathComponent:@"light_makeup.json"];
-//    NSString *segJsonPath = [levelPath stringByAppendingPathComponent:@"segmentation.json"];
-//    
-//    [[TEUIConfig shareInstance] setTEPanelViewRes:beautyJsonPath beautyBody:bodyJsonPath lut:lutJsonPath motion:motionJsonPath makeup:nil segmentation:segJsonPath lightMakeup:lightMakeupJsonPath];
-    [[TEUIConfig shareInstance] setPanelLevel:S1_07]; // 配置面板显示级别
+    NSMutableArray *resArray = [[NSMutableArray alloc] init];
+    [resArray addObject:@{TEUI_BEAUTY_TEMPLATE : beautyTemplateJsonPath}];
+    [resArray addObject:@{TEUI_BEAUTY : beautyJsonPath}];
+    [resArray addObject:@{TEUI_BEAUTY_SHAPE : beautyShapeJsonPath}];
+    [resArray addObject:@{TEUI_BEAUTY_IMAGE : beautyImageJsonPath}];
+    [resArray addObject:@{TEUI_BEAUTY_MAKEUP : beautyMakeupJsonPath}];
+    [resArray addObject:@{TEUI_LIGHT_MAKEUP : lightMakeupJsonPath}];
+    [resArray addObject:@{TEUI_LUT : lutJsonPath}];
+    [resArray addObject:@{TEUI_BEAUTY_BODY : beautyBodyJsonPath}];
+    [resArray addObject:@{TEUI_MOTION_2D : motion2dJsonPath}];
+    [resArray addObject:@{TEUI_MOTION_3D : motion3dJsonPath}];
+    [resArray addObject:@{TEUI_MOTION_GESTURE : motionHandJsonPath}];
+    [resArray addObject:@{TEUI_MAKEUP : makeupJsonPath}];
+    [resArray addObject:@{TEUI_SEGMENTATION : segmentationJsonPath}];
+    
+    [[TEUIConfig shareInstance] setTEPanelViewResources:resArray];
 }
 
 - (void)initXMagic {
     __weak __typeof(self)weakSelf = self;
-    [TEBeautyKit create:^(TEBeautyKit * _Nullable api) {
+    [TEBeautyKit createXMagic:EFFECT_MODE_PRO onInitListener:^(TEBeautyKit * _Nullable beautyKit) {
         __strong typeof(self) strongSelf = weakSelf;
-        strongSelf.teBeautyKit = api;
+        strongSelf.teBeautyKit = beautyKit;
         strongSelf.tePanelView.teBeautyKit = strongSelf.teBeautyKit;
         [strongSelf.tePanelView setDefaultBeauty];
         [strongSelf.teBeautyKit setLogLevel:YT_SDK_ERROR_LEVEL];
