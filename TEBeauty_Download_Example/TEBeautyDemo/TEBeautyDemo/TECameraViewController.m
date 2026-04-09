@@ -64,37 +64,62 @@ typedef NS_ENUM(NSUInteger, PreviewResolution) {
     [self.tePanelView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(self.view);
         make.centerX.mas_equalTo(self.view);
-        make.height.mas_equalTo(200);
+        make.height.mas_equalTo(250);
         make.bottom.mas_equalTo(self.view.mas_bottom);
     }];
 }
 
 - (TEPanelView *)tePanelView {
     if (!_tePanelView) {
-        _tePanelView = [[TEPanelView alloc] init:nil comboType:nil];
+        _tePanelView = [[TEPanelView alloc] init];
         _tePanelView.delegate = self;
     }
     return _tePanelView;
 }
 
 - (void)initBeautyJson {
-    [[TEUIConfig shareInstance] setPanelLevel:S1_07];
-    NSString *corePath = [[TEDownloader shardManager].basicPath stringByAppendingPathComponent:@"ModelRes"];
-    //设置美颜模型下载到沙盒中的路径给TEUIConfig
-    [[TEUIConfig shareInstance] setLightCoreBundlePath:corePath];
+    NSBundle *bundle = [NSBundle mainBundle];
+    NSString *beautyTemplateJsonPath = [bundle pathForResource:@"beauty_template_ios" ofType:@"json"];
+    NSString *lightMakeupJsonPath = [bundle pathForResource:@"light_makeup" ofType:@"json"];
+    NSString *beautyJsonPath = [bundle pathForResource:@"beauty" ofType:@"json"];
+    NSString *beautyShapeJsonPath = [bundle pathForResource:@"beauty_shape" ofType:@"json"];
+    NSString *beautyImageJsonPath = [bundle pathForResource:@"beauty_image" ofType:@"json"];
+    NSString *beautyMakeupJsonPath = [bundle pathForResource:@"beauty_makeup" ofType:@"json"];
+    NSString *lutJsonPath = [bundle pathForResource:@"lut" ofType:@"json"];
+    NSString *beautyBodyJsonPath = [bundle pathForResource:@"beauty_body" ofType:@"json"];
+    NSString *motion2dJsonPath = [bundle pathForResource:@"motion_2d" ofType:@"json"];
+    NSString *motion3dJsonPath = [bundle pathForResource:@"motion_3d" ofType:@"json"];
+    NSString *motionHandJsonPath = [bundle pathForResource:@"motion_gesture" ofType:@"json"];
+    NSString *makeupJsonPath = [bundle pathForResource:@"makeup" ofType:@"json"];
+    NSString *segmentationJsonPath = [bundle pathForResource:@"segmentation" ofType:@"json"];
+    
+    NSMutableArray *resArray = [[NSMutableArray alloc] init];
+    [resArray addObject:@{TEUI_BEAUTY_TEMPLATE : beautyTemplateJsonPath}];
+    [resArray addObject:@{TEUI_BEAUTY : beautyJsonPath}];
+    [resArray addObject:@{TEUI_BEAUTY_SHAPE : beautyShapeJsonPath}];
+    [resArray addObject:@{TEUI_BEAUTY_IMAGE : beautyImageJsonPath}];
+    [resArray addObject:@{TEUI_BEAUTY_MAKEUP : beautyMakeupJsonPath}];
+    [resArray addObject:@{TEUI_LIGHT_MAKEUP : lightMakeupJsonPath}];
+    [resArray addObject:@{TEUI_LUT : lutJsonPath}];
+    [resArray addObject:@{TEUI_BEAUTY_BODY : beautyBodyJsonPath}];
+    [resArray addObject:@{TEUI_MOTION_2D : motion2dJsonPath}];
+    [resArray addObject:@{TEUI_MOTION_3D : motion3dJsonPath}];
+    [resArray addObject:@{TEUI_MOTION_GESTURE : motionHandJsonPath}];
+    [resArray addObject:@{TEUI_MAKEUP : makeupJsonPath}];
+    [resArray addObject:@{TEUI_SEGMENTATION : segmentationJsonPath}];
+    
+    [[TEUIConfig shareInstance] setTEPanelViewResources:resArray];
 }
 
 - (void)initXMagic {
     __weak __typeof(self)weakSelf = self;
-    [TEBeautyKit create:^(XMagic * _Nullable api) {
+    [TEBeautyKit createXMagic:EFFECT_MODE_PRO onInitListener:^(TEBeautyKit * _Nullable beautyKit) {
         __strong typeof(self) strongSelf = weakSelf;
-        strongSelf.xMagicKit = api;
-        [strongSelf.teBeautyKit setXMagicApi:api];
+        strongSelf.teBeautyKit = beautyKit;
         strongSelf.tePanelView.teBeautyKit = strongSelf.teBeautyKit;
-        [strongSelf.teBeautyKit setTePanelView:strongSelf.tePanelView];
+        [strongSelf.tePanelView setDefaultBeauty];
         [strongSelf.teBeautyKit setLogLevel:YT_SDK_ERROR_LEVEL];
-        strongSelf.tePanelView.beautyKitApi = api;
-        [strongSelf.xMagicKit registerSDKEventListener:strongSelf];
+        [strongSelf.teBeautyKit registerSDKEventListener:strongSelf];
     }];
 }
 
@@ -222,7 +247,7 @@ typedef NS_ENUM(NSUInteger, PreviewResolution) {
 - (void)mycaptureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)inputSampleBuffer fromConnection:(AVCaptureConnection *)connection originImageProcess:(BOOL)originImageProcess
 {
     CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(inputSampleBuffer);
-    YTProcessOutput *output = [self.teBeautyKit processPixelData:pixelBuffer withOrigin:YtLightImageOriginTopLeft withOrientation:YtLightCameraRotation0];
+    YTProcessOutput *output = [self.teBeautyKit processPixelData:pixelBuffer pixelDataWidth:CVPixelBufferGetWidth(pixelBuffer) pixelDataHeight:CVPixelBufferGetHeight(pixelBuffer) withOrigin:YtLightImageOriginTopLeft withOrientation:YtLightCameraRotation0];
     if (output.pixelData.data != nil) {
         CMSampleBufferRef outSampleBuffer = [self sampleBufferFromPixelBuffer:output.pixelData.data];
         // 这里是处理进入后台后layer失效问题
