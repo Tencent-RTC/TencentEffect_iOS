@@ -9,6 +9,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+static NSString *const kExportEffectData = @"exportEffectData";
+
 @interface TECameraViewController : UIViewController
 
 @end
