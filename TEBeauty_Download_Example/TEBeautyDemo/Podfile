@@ -6,7 +6,7 @@ target 'TEBeautyDemo' do
   use_frameworks!
 
   # Pods for TEBeautyDemo
-  pod 'TEBeautyKit',:podspec => 'https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/iOS/TEBeautyKit/latest/TEBeautyKit.podspec'
+  pod 'TEBeautyKit/S1-07-nobundle',:podspec => 'https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/iOS/TEBeautyKit/latest/TEBeautyKit.podspec'
 end
 
 post_install do |installer|

@@ -249,6 +249,8 @@
 		C02115BF2BD8B2E80093A50E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C02115BD2BD8B2E80093A50E /* LaunchScreen.storyboard */; };
 		C02115C22BD8B2E80093A50E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C02115C12BD8B2E80093A50E /* main.m */; };
 		C0A1BDFE2BD927EC0097FD72 /* TECameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C0A1BDFD2BD927EC0097FD72 /* TECameraViewController.m */; };
+		E1A0000000000000000001B1 /* TCEVideoCapture.m in Sources */ = {isa = PBXBuildFile; fileRef = E1A0000000000000000001A2 /* TCEVideoCapture.m */; };
+		E1A0000000000000000001B2 /* TEPreviewView.m in Sources */ = {isa = PBXBuildFile; fileRef = E1A0000000000000000001A4 /* TEPreviewView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -502,6 +504,10 @@
 		C02115C12BD8B2E80093A50E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		C0A1BDFC2BD927EC0097FD72 /* TECameraViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TECameraViewController.h; sourceTree = "<group>"; };
 		C0A1BDFD2BD927EC0097FD72 /* TECameraViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TECameraViewController.m; sourceTree = "<group>"; };
+		E1A0000000000000000001A1 /* TCEVideoCapture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TCEVideoCapture.h; sourceTree = "<group>"; };
+		E1A0000000000000000001A2 /* TCEVideoCapture.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TCEVideoCapture.m; sourceTree = "<group>"; };
+		E1A0000000000000000001A3 /* TEPreviewView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TEPreviewView.h; sourceTree = "<group>"; };
+		E1A0000000000000000001A4 /* TEPreviewView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TEPreviewView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -898,6 +904,9 @@
 				C02115B62BD8B2E80093A50E /* ViewController.m */,
 				C0A1BDFC2BD927EC0097FD72 /* TECameraViewController.h */,
 				C0A1BDFD2BD927EC0097FD72 /* TECameraViewController.m */,
+				E1A0000000000000000001C1 /* Video */,
+				E1A0000000000000000001A3 /* TEPreviewView.h */,
+				E1A0000000000000000001A4 /* TEPreviewView.m */,
 				C02115B82BD8B2E80093A50E /* Main.storyboard */,
 				C02115BB2BD8B2E80093A50E /* Assets.xcassets */,
 				C02115BD2BD8B2E80093A50E /* LaunchScreen.storyboard */,
@@ -905,6 +914,15 @@
 				C02115C12BD8B2E80093A50E /* main.m */,
 			);
 			path = TEBeautyDemo;
+			sourceTree = "<group>";
+		};
+		E1A0000000000000000001C1 /* Video */ = {
+			isa = PBXGroup;
+			children = (
+				E1A0000000000000000001A1 /* TCEVideoCapture.h */,
+				E1A0000000000000000001A2 /* TCEVideoCapture.m */,
+			);
+			path = Video;
 			sourceTree = "<group>";
 		};
 		D1493FC140A6E9E33AEAC74F /* Pods */ = {
@@ -1226,13 +1244,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-TEBeautyDemo/Pods-TEBeautyDemo-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-TEBeautyDemo/Pods-TEBeautyDemo-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1269,13 +1283,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-TEBeautyDemo/Pods-TEBeautyDemo-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-TEBeautyDemo/Pods-TEBeautyDemo-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1291,6 +1301,8 @@
 			files = (
 				C02115B72BD8B2E80093A50E /* ViewController.m in Sources */,
 				C0A1BDFE2BD927EC0097FD72 /* TECameraViewController.m in Sources */,
+				E1A0000000000000000001B1 /* TCEVideoCapture.m in Sources */,
+				E1A0000000000000000001B2 /* TEPreviewView.m in Sources */,
 				C02115B12BD8B2E80093A50E /* AppDelegate.m in Sources */,
 				C02115C22BD8B2E80093A50E /* main.m in Sources */,
 				C02115B42BD8B2E80093A50E /* SceneDelegate.m in Sources */,
