@@ -8,83 +8,60 @@
 #import "TECameraViewController.h"
 #import <AVFoundation/AVFoundation.h>
 #import "Masonry.h"
-#import "TEUIConfig.h"
 #import "TEBeautyKit.h"
+#import "TEUIConfig.h"
 #import "TEPanelView.h"
-#import "TEDownloader.h"
-#import <OpenGLES/EAGL.h>
-#import <OpenGLES/ES2/gl.h>
-#import <OpenGLES/ES2/glext.h>
+#import "TCEVideoCapture.h"
+#import "TEPreviewView.h"
 
+@interface TECameraViewController () <TCEVideoCaptureDelegate, TEPanelViewDelegate>
 
-typedef NS_ENUM(NSUInteger, PreviewResolution) {
-    PreviewResolution540P = 0,
-    PreviewResolution720P = 1,
-    PreviewResolution1080P = 2
-};
-
-@interface TECameraViewController ()<AVCaptureVideoDataOutputSampleBufferDelegate,TEPanelViewDelegate,YTSDKEventListener>
-
-@property(nonatomic, assign) PreviewResolution currentPreviewResolution;
-// Camera related
-@property (nonatomic, strong) AVCaptureDevice *cameraDevice;
-@property (nonatomic, strong) AVCaptureSession *captureSession;
-@property (nonatomic, strong) AVCaptureVideoDataOutput *videoDataOutput;
-@property (nonatomic,strong) AVSampleBufferDisplayLayer *previewLayer;
-
-@property (nonatomic, strong) XMagic *xMagicKit;
+@property (nonatomic, strong) TEPreviewView *previewView;
+@property (nonatomic, strong) TCEVideoCapture *videoCapture;
 @property (nonatomic, strong) TEBeautyKit *teBeautyKit;
 @property (nonatomic, strong) TEPanelView *tePanelView;
+@property (nonatomic, assign) UIInterfaceOrientation interfaceOrientation;
 
 @end
 
 @implementation TECameraViewController
 
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    
-    [self initBeautyJson];
-    [self buildUI];
-    [self initXMagic];
-    [self buildCamra];
-}
-
-- (void)buildUI
-{
-    self.view.backgroundColor = [UIColor blackColor];
-    self.currentPreviewResolution = PreviewResolution720P;
-    
-    self.previewLayer = [AVSampleBufferDisplayLayer layer];
-    [self.view.layer insertSublayer:self.previewLayer atIndex:0];
-    self.previewLayer.frame = self.view.bounds;
-    
-    [self.view addSubview:self.tePanelView];
-    [self.tePanelView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo(self.view);
-        make.centerX.mas_equalTo(self.view);
-        make.height.mas_equalTo(250);
-        make.bottom.mas_equalTo(self.view.mas_bottom);
-    }];
-}
-
-- (TEPanelView *)tePanelView {
-    if (!_tePanelView) {
-        _tePanelView = [[TEPanelView alloc] init];
-        _tePanelView.delegate = self;
+- (void)dealloc {
+    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+    if (self.teBeautyKit) {
+        [self.teBeautyKit onDestroy];
     }
-    return _tePanelView;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    // 配置面板
+    [self initBeautyJson];
+    // UI
+    [self buildUI];
+    // 初始化SDK
+    [self initSDK];
+
+    // 请求摄像头权限
+    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+        if (granted) {
+            [self.videoCapture startRunning];
+        }
+    }];
+
+    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+    [self updateInterfaceOrientation];
 }
 
 - (void)initBeautyJson {
     NSBundle *bundle = [NSBundle mainBundle];
     NSString *beautyTemplateJsonPath = [bundle pathForResource:@"beauty_template_ios" ofType:@"json"];
-    NSString *lightMakeupJsonPath = [bundle pathForResource:@"light_makeup" ofType:@"json"];
     NSString *beautyJsonPath = [bundle pathForResource:@"beauty" ofType:@"json"];
     NSString *beautyShapeJsonPath = [bundle pathForResource:@"beauty_shape" ofType:@"json"];
     NSString *beautyImageJsonPath = [bundle pathForResource:@"beauty_image" ofType:@"json"];
     NSString *beautyMakeupJsonPath = [bundle pathForResource:@"beauty_makeup" ofType:@"json"];
+    NSString *lightMakeupJsonPath = [bundle pathForResource:@"light_makeup" ofType:@"json"];
     NSString *lutJsonPath = [bundle pathForResource:@"lut" ofType:@"json"];
     NSString *beautyBodyJsonPath = [bundle pathForResource:@"beauty_body" ofType:@"json"];
     NSString *motion2dJsonPath = [bundle pathForResource:@"motion_2d" ofType:@"json"];
@@ -92,7 +69,7 @@ typedef NS_ENUM(NSUInteger, PreviewResolution) {
     NSString *motionHandJsonPath = [bundle pathForResource:@"motion_gesture" ofType:@"json"];
     NSString *makeupJsonPath = [bundle pathForResource:@"makeup" ofType:@"json"];
     NSString *segmentationJsonPath = [bundle pathForResource:@"segmentation" ofType:@"json"];
-    
+
     NSMutableArray *resArray = [[NSMutableArray alloc] init];
     [resArray addObject:@{TEUI_BEAUTY_TEMPLATE : beautyTemplateJsonPath}];
     [resArray addObject:@{TEUI_BEAUTY : beautyJsonPath}];
@@ -107,181 +84,217 @@ typedef NS_ENUM(NSUInteger, PreviewResolution) {
     [resArray addObject:@{TEUI_MOTION_GESTURE : motionHandJsonPath}];
     [resArray addObject:@{TEUI_MAKEUP : makeupJsonPath}];
     [resArray addObject:@{TEUI_SEGMENTATION : segmentationJsonPath}];
-    
+
     [[TEUIConfig shareInstance] setTEPanelViewResources:resArray];
 }
 
-- (void)initXMagic {
+- (void)buildUI {
+    self.view.backgroundColor = [UIColor blackColor];
+
+    self.previewView = [[TEPreviewView alloc] init];
+    self.previewView.previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+    [self.view addSubview:self.previewView];
+    [self.previewView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self.view);
+    }];
+
+    [self.view addSubview:self.tePanelView];
+    [self.tePanelView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.bottom.mas_equalTo(self.view);
+        make.height.mas_equalTo(230);
+    }];
+}
+
+- (void)initSDK {
+    // 如果LightCore是动态下载，需要先设置本地路径
+//    [[TEUIConfig shareInstance] setLightCoreBundlePath:@"LightCore.bundle所在目录"];
     __weak __typeof(self)weakSelf = self;
     [TEBeautyKit createXMagic:EFFECT_MODE_PRO onInitListener:^(TEBeautyKit * _Nullable beautyKit) {
         __strong typeof(self) strongSelf = weakSelf;
         strongSelf.teBeautyKit = beautyKit;
         strongSelf.tePanelView.teBeautyKit = strongSelf.teBeautyKit;
         [strongSelf.tePanelView setDefaultBeauty];
-        [strongSelf.teBeautyKit setLogLevel:YT_SDK_ERROR_LEVEL];
-        [strongSelf.teBeautyKit registerSDKEventListener:strongSelf];
     }];
 }
 
-- (TEBeautyKit *)teBeautyKit {
-    if (!_teBeautyKit) {
-        _teBeautyKit= [[TEBeautyKit alloc] init];
+- (TEPanelView *)tePanelView {
+    if (!_tePanelView) {
+        _tePanelView = [[TEPanelView alloc] init];
+        _tePanelView.delegate = self;
     }
-    return _teBeautyKit;
+    return _tePanelView;
 }
 
-#pragma mark - cramera
-- (void)buildCamra
-{
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord
-                                     withOptions:AVAudioSessionCategoryOptionDefaultToSpeaker
-                                           error:nil];
-    [self buildCamera:AVCaptureDevicePositionBack];
+- (TCEVideoCapture *)videoCapture {
+    if (!_videoCapture) {
+        _videoCapture = [[TCEVideoCapture alloc] init];
+        _videoCapture.delegate = self;
+        _videoCapture.resolution = TCEVideoCaptureResolution_720P;
+        _videoCapture.mirrored = YES;
+    }
+    return _videoCapture;
 }
 
-- (BOOL)checkCameraAuthorization {
-    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
-    if (status == AVAuthorizationStatusDenied || status == AVAuthorizationStatusRestricted) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            UIAlertView *alerView = [[UIAlertView alloc] initWithTitle:@"Tencent Effect想访问您的相机"
-                                                               message:nil
-                                                              delegate:self
-                                                     cancelButtonTitle:@"不允许"
-                                                     otherButtonTitles:@"好", nil];
-            [alerView show];
-        });
-        return NO;
-    }
-    return YES;
+#pragma mark - Orientation
+
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    [self updateInterfaceOrientation];
 }
-- (void)buildCamera:(AVCaptureDevicePosition)cameraPosition {
-    if (![self checkCameraAuthorization]) {
+
+/// 更新当前 UI 方向
+- (void)updateInterfaceOrientation {
+    UIInterfaceOrientation newOrientation;
+    if (@available(iOS 13.0, *)) {
+        UIWindowScene *windowScene = (UIWindowScene *)[UIApplication sharedApplication].connectedScenes.anyObject;
+        newOrientation = windowScene.interfaceOrientation;
+    } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        newOrientation = [UIApplication sharedApplication].statusBarOrientation;
+#pragma clang diagnostic pop
+    }
+
+    // 倒立方向不更新给 SDK
+    if (newOrientation == UIInterfaceOrientationPortraitUpsideDown) {
         return;
     }
-    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
-        if (granted) {
-            // 设置摄像头翻转
-            NSArray *cameraDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
-            for (AVCaptureDevice *cameraDevice in cameraDevices) {
-                self.cameraDevice = cameraDevice;
-                if (cameraDevice.position == cameraPosition) {
-                    break;
+    self.interfaceOrientation = newOrientation;
+}
+
+/// 根据摄像头位置、镜像与 UI 方向计算 SDK 需要的旋转角度
+- (YtLightDeviceCameraOrientation)covertSDKOrientation {
+    YtLightDeviceCameraOrientation orientation = YtLightCameraRotation0;
+    BOOL isFront = (self.videoCapture.devicePosition == AVCaptureDevicePositionFront);
+
+    if (isFront) {
+        BOOL isMirrored = self.videoCapture.mirrored;
+        switch (self.interfaceOrientation) {
+            case UIInterfaceOrientationPortrait:
+            {
+                if ([[UIDevice currentDevice] orientation] == UIDeviceOrientationPortraitUpsideDown) {
+                    orientation = isMirrored ? YtLightCameraRotation270 : YtLightCameraRotation90;
+                } else {
+                    orientation = isMirrored ? YtLightCameraRotation90 : YtLightCameraRotation270;
                 }
             }
-            AVCaptureSession *cameraCaptureSession = [[AVCaptureSession alloc] init];
-            cameraCaptureSession.sessionPreset = AVCaptureSessionPresetHigh;
-            [cameraCaptureSession beginConfiguration];
-            
-            if(self->_currentPreviewResolution == PreviewResolution540P){
-                cameraCaptureSession.sessionPreset = AVCaptureSessionPresetiFrame960x540;
-            } else if(self->_currentPreviewResolution == PreviewResolution1080P){
-                cameraCaptureSession.sessionPreset = AVCaptureSessionPreset1920x1080;
-            } else {
-                cameraCaptureSession.sessionPreset = AVCaptureSessionPreset1280x720;
-            }
-            
-            AVCaptureDeviceInput *cameraInput = [AVCaptureDeviceInput deviceInputWithDevice:self.cameraDevice error:nil];
-            if ([cameraCaptureSession canAddInput:cameraInput]) {
-                [cameraCaptureSession addInput:cameraInput];
-            }
-            // VideoDataOutput
-            dispatch_queue_t videoDataQueue = dispatch_queue_create("com.tencent.youtu.videodata", NULL);
-            self.videoDataOutput = [[AVCaptureVideoDataOutput alloc] init];
-            self.videoDataOutput.alwaysDiscardsLateVideoFrames = YES;
-            self.videoDataOutput.videoSettings = @{(id) kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_32BGRA)};
-            [self.videoDataOutput setSampleBufferDelegate:self queue:videoDataQueue];
-            
-            //设置帧率到30FPS
-            int desiredFrameRate = 30;
-            AVCaptureDeviceFormat *desiredFormat = nil;
-            for ( AVCaptureDeviceFormat *format in [self.cameraDevice formats] ) {
-              for ( AVFrameRateRange *range in format.videoSupportedFrameRateRanges ) {
-                  if ( self.cameraDevice.activeFormat == format && range.maxFrameRate >= desiredFrameRate && range.minFrameRate <= desiredFrameRate ) {
-                      desiredFormat = format;
-                      break;
-                  }
-              }
-              if (desiredFormat != nil) {
-                  break;
-              }
-            }
-            if ( desiredFormat ) {
-              if ( [self.cameraDevice lockForConfiguration:NULL] == YES ) {
-                  self.cameraDevice.activeVideoMinFrameDuration = CMTimeMake ( 1, desiredFrameRate );
-                  self.cameraDevice.activeVideoMaxFrameDuration = CMTimeMake ( 1, desiredFrameRate );
-                  [self.cameraDevice unlockForConfiguration];
-              }
-            }
-            if ([cameraCaptureSession canAddOutput:self.videoDataOutput]) {
-                [cameraCaptureSession addOutput:self.videoDataOutput];
-            }
-            cameraCaptureSession.usesApplicationAudioSession = YES;
-            cameraCaptureSession.automaticallyConfiguresApplicationAudioSession = NO;
-            [cameraCaptureSession commitConfiguration];
-            for (AVCaptureOutput *output in cameraCaptureSession.outputs) {
-                for (AVCaptureConnection *connection in output.connections) {
-                    if (connection.isVideoOrientationSupported) {
-                        connection.videoOrientation = AVCaptureVideoOrientationPortrait;
-                    }
-                    if (connection.isVideoMirroringSupported) {
-                        connection.videoMirrored = cameraPosition == AVCaptureDevicePositionFront;
-                    }
+                break;
+            case UIInterfaceOrientationPortraitUpsideDown:
+                orientation = isMirrored ? YtLightCameraRotation270 : YtLightCameraRotation90;
+                break;
+            case UIInterfaceOrientationLandscapeLeft:
+                orientation = YtLightCameraRotation0;
+                break;
+            case UIInterfaceOrientationLandscapeRight:
+                orientation = YtLightCameraRotation180;
+                break;
+            default:
+                break;
+        }
+    } else {
+        switch (self.interfaceOrientation) {
+            case UIInterfaceOrientationPortrait:
+            {
+                if ([[UIDevice currentDevice] orientation] == UIDeviceOrientationPortraitUpsideDown) {
+                    orientation = YtLightCameraRotation90;
+                } else {
+                    orientation = YtLightCameraRotation270;
                 }
             }
-            if (cameraCaptureSession.inputs.count > 0 && cameraCaptureSession.outputs.count > 0) {
-                [cameraCaptureSession startRunning];
-            }
-            self.captureSession = cameraCaptureSession;
-        }
-    }];
-}
-
-#pragma mark AVCaptureVideoDataOutputSampleBufferDelegate
-- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
-{
-    if (captureOutput == self.videoDataOutput) {
-        [self mycaptureOutput:captureOutput didOutputSampleBuffer:sampleBuffer fromConnection:connection originImageProcess:YES];
-    }
-}
-
-- (void)mycaptureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)inputSampleBuffer fromConnection:(AVCaptureConnection *)connection originImageProcess:(BOOL)originImageProcess
-{
-    CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(inputSampleBuffer);
-    YTProcessOutput *output = [self.teBeautyKit processPixelData:pixelBuffer pixelDataWidth:CVPixelBufferGetWidth(pixelBuffer) pixelDataHeight:CVPixelBufferGetHeight(pixelBuffer) withOrigin:YtLightImageOriginTopLeft withOrientation:YtLightCameraRotation0];
-    if (output.pixelData.data != nil) {
-        CMSampleBufferRef outSampleBuffer = [self sampleBufferFromPixelBuffer:output.pixelData.data];
-        // 这里是处理进入后台后layer失效问题
-        if (self.previewLayer.status == AVQueuedSampleBufferRenderingStatusFailed) {
-            [self.previewLayer flush];
-        }
-        if (outSampleBuffer != NULL) {
-            [self.previewLayer enqueueSampleBuffer:outSampleBuffer];
-            CFRelease(outSampleBuffer);
+                break;
+            case UIInterfaceOrientationPortraitUpsideDown:
+                orientation = YtLightCameraRotation90;
+                break;
+            case UIInterfaceOrientationLandscapeLeft:
+                orientation = YtLightCameraRotation180;
+                break;
+            case UIInterfaceOrientationLandscapeRight:
+                orientation = YtLightCameraRotation0;
+                break;
+            default:
+                break;
         }
     }
-    
-    if (output != nil) {
-        output.pixelData = nil;
-        output = nil;
-    }
+    return orientation;
 }
 
-- (CMSampleBufferRef)sampleBufferFromPixelBuffer:(CVPixelBufferRef)pixelBuffer
-{
-    CFRetain(pixelBuffer);
+#pragma mark - TCEVideoCaptureDelegate
+
+- (void)videoCaptureDidOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer {
+    if (!sampleBuffer) {
+        return;
+    }
+    [self.teBeautyKit setImageOrientation:YtLightCameraRotation0];
+    [self processSampleBuffer:sampleBuffer orientation:[self covertSDKOrientation]];
+}
+
+#pragma mark - 美颜处理
+
+- (void)processSampleBuffer:(CMSampleBufferRef)inputSampleBuffer orientation:(YtLightDeviceCameraOrientation)orientation {
+    CVImageBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(inputSampleBuffer);
+    if (!pixelBuffer) {
+        return;
+    }
+    YTProcessOutput *output = [self.teBeautyKit processPixelData:pixelBuffer
+                                                  pixelDataWidth:(int)CVPixelBufferGetWidth(pixelBuffer)
+                                                 pixelDataHeight:(int)CVPixelBufferGetHeight(pixelBuffer)
+                                                      withOrigin:YtLightImageOriginTopLeft
+                                                 withOrientation:orientation];
+    if (!output || !output.pixelData || !output.pixelData.data) {
+        return;
+    }
+    CVPixelBufferRef outputPixelBuffer = CVPixelBufferRetain(output.pixelData.data);
+    CMSampleBufferRef outputSampleBuffer = [self sampleBufferFromPixelBuffer:outputPixelBuffer];
+    CVPixelBufferRelease(outputPixelBuffer);
+    if (outputSampleBuffer == NULL) {
+        return;
+    }
+    [self enqueueSampleBufferOnMainThread:outputSampleBuffer];
+}
+
+- (void)enqueueSampleBufferOnMainThread:(CMSampleBufferRef)sampleBuffer {
+    if (!sampleBuffer) {
+        return;
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // 处理进入后台后layer失效问题
+        if (self.previewView.previewLayer.status == AVQueuedSampleBufferRenderingStatusFailed) {
+            [self.previewView.previewLayer flush];
+        }
+        [self.previewView.previewLayer enqueueSampleBuffer:sampleBuffer];
+        CFRelease(sampleBuffer);
+    });
+}
+
+- (CMSampleBufferRef)sampleBufferFromPixelBuffer:(CVPixelBufferRef)pixelBuffer {
     CMSampleBufferRef outputSampleBuffer = NULL;
     CMSampleTimingInfo timing = {kCMTimeInvalid, kCMTimeInvalid, kCMTimeInvalid};
     CMVideoFormatDescriptionRef videoInfo = NULL;
-    OSStatus result = CMVideoFormatDescriptionCreateForImageBuffer(NULL, pixelBuffer, &videoInfo);
-    result = CMSampleBufferCreateForImageBuffer(kCFAllocatorDefault, pixelBuffer, true, NULL, NULL, videoInfo, &timing, &outputSampleBuffer);
+    CMVideoFormatDescriptionCreateForImageBuffer(NULL, pixelBuffer, &videoInfo);
+    CMSampleBufferCreateForImageBuffer(kCFAllocatorDefault, pixelBuffer, true, NULL, NULL, videoInfo, &timing, &outputSampleBuffer);
 
     CFArrayRef attachments = CMSampleBufferGetSampleAttachmentsArray(outputSampleBuffer, YES);
     CFMutableDictionaryRef dict = (CFMutableDictionaryRef)CFArrayGetValueAtIndex(attachments, 0);
     CFDictionarySetValue(dict, kCMSampleAttachmentKey_DisplayImmediately, kCFBooleanTrue);
-    
+
     CFRelease(videoInfo);
-    CFRelease(pixelBuffer);
     return outputSampleBuffer;
+}
+
+#pragma mark - TEPanelViewDelegate
+
+- (void)showBeautyChanged:(BOOL)open {
+    [self.teBeautyKit enableBeauty:open];
+}
+
+#pragma mark - Rotation Support
+
+- (BOOL)shouldAutorotate {
+    return YES;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskAllButUpsideDown;
 }
 
 @end

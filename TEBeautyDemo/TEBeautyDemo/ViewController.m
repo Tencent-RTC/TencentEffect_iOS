@@ -9,8 +9,8 @@
 #import "TEBeautyKit.h"
 #import "TECameraViewController.h"
 
-static NSString *const kTELicenseURL = @"";
-static NSString *const kTELicenseKey = @"";
+static NSString *const kTELicenseURL = @"please set your license url";
+static NSString *const kTELicenseKey = @"please set your license key";
 
 @interface ViewController ()
 
