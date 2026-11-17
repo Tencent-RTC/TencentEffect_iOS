@@ -1,0 +1,17 @@
+/* 
+  Localizable.strings
+  TEBeautyDemo - French
+
+  Created for TEBeautyKit localization.
+  
+*/
+
+"panel_makeup" = "Maquillage";
+"panel_lut" = "Filtres";
+"revert_btn_txt" = "Réinitialiser";
+"revert_tip_title" = "Confirmer la réinitialisation ?";
+"revert_tip_msg" = "\nLa réinitialisation restaurera tous les effets par défaut. Cette action est irréversible";
+"revert_tip_dialog_left_btn" = "Annuler";
+"greenscreen_import_picture" = "Importer une image";
+"greenscreen_msg" = "\nVeuillez vous placer devant un écran vert et choisir une image pour remplacer l'arrière-plan actuel";
+"downloading" = "Téléchargement";

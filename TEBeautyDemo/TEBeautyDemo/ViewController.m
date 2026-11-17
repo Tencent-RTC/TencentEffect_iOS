@@ -22,17 +22,19 @@ static NSString *const kTELicenseKey = @"please set your license key";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kExportEffectData];
-    
 }
 
 
 - (IBAction)authAndPush:(UIButton *)sender {
     
     [TEBeautyKit setTELicense:kTELicenseURL key:kTELicenseKey completion:^(NSInteger authresult, NSString * _Nullable errorMsg) {
-        if (authresult == 0) {
-            TECameraViewController *cameraVC = [[TECameraViewController alloc] init];
-            [self.navigationController pushViewController:cameraVC animated:YES];
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (authresult == 0) {
+                TECameraViewController *cameraVC = [[TECameraViewController alloc] init];
+                cameraVC.modalPresentationStyle = UIModalPresentationFullScreen;
+                [self presentViewController:cameraVC animated:YES completion:nil];
+            }
+        });
     }];
     
 }

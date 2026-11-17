@@ -19,6 +19,29 @@
     return YES;
 }
 
+#pragma mark - Rotation Control
+- (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window {
+    // 获取当前显示的 ViewController
+    UIViewController *topVC = [self topViewControllerWithRootViewController:window.rootViewController];
+    if (topVC && [topVC respondsToSelector:@selector(supportedInterfaceOrientations)]) {
+        return [topVC supportedInterfaceOrientations];
+    }
+    // 默认只支持竖屏
+    return UIInterfaceOrientationMaskPortrait;
+}
+
+- (UIViewController *)topViewControllerWithRootViewController:(UIViewController *)rootViewController {
+    if ([rootViewController isKindOfClass:[UITabBarController class]]) {
+        UITabBarController *tabBarController = (UITabBarController *)rootViewController;
+        return [self topViewControllerWithRootViewController:tabBarController.selectedViewController];
+    } else if ([rootViewController isKindOfClass:[UINavigationController class]]) {
+        UINavigationController *navigationController = (UINavigationController *)rootViewController;
+        return [self topViewControllerWithRootViewController:navigationController.topViewController];
+    } else if (rootViewController.presentedViewController) {
+        return [self topViewControllerWithRootViewController:rootViewController.presentedViewController];
+    }
+    return rootViewController;
+}
 
 #pragma mark - UISceneSession lifecycle
 

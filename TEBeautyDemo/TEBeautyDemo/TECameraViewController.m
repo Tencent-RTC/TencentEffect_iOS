@@ -9,13 +9,15 @@
 #import <AVFoundation/AVFoundation.h>
 #import <OpenGLES/ES2/glext.h>
 #import <OpenGLES/ES3/gl.h>
-#import <Masonry/Masonry.h>
+#import <TEBeautyKit/TELayoutKit.h>
 #import <TEBeautyKit/TEUIConfig.h>
 #import <TEBeautyKit/TEPanelView.h>
 #import <TEBeautyKit/TEDownloader.h>
 #import "TCEVideoCapture.h"
 #import "TEPreviewView.h"
 #import "TEPixelBufferRotator.h"
+
+#define index_panel
 
 @interface TECameraViewController ()<TCEVideoCaptureDelegate,TEPanelViewDelegate,YTSDKLogListener,YTSDKEventListener>
 {
@@ -29,6 +31,7 @@
 @property (nonatomic, strong) TEPreviewView *previewView;
 @property (nonatomic, strong) UIButton *exportBtn;
 @property (nonatomic, strong) UIButton *mirrorBtn;
+@property (nonatomic, strong) UISwitch *layoutDirSwitch;
 
 @property (nonatomic, strong) TCEVideoCapture *videoCapture;
 @property (nonatomic, strong) TEBeautyKit *teBeautyKit;
@@ -103,25 +106,11 @@
 
 - (void)initBeautyJson {
     self.exportBeautyString = [[NSUserDefaults standardUserDefaults] objectForKey:kExportEffectData];
-    // 套餐文件清单
-    // S1_07 : beauty, beauty_image, beauty_shape, beauty_makeup, lut,  motion_2d, motion_3d, makeup, light_makeup, motion_gesture, segmentation, beauty_body
-    // S1_04 : beauty, beauty_image, beauty_shape, beauty_makeup, lut,  motion_2d, motion_3d, makeup, light_makeup, motion_gesture, segmentation
-    // S1_03 : beauty, beauty_image, beauty_shape, beauty_makeup, lut,  motion_2d, motion_3d, makeup, light_makeup, segmentation
-    // S1_02 : beauty, beauty_image, beauty_shape, beauty_makeup, lut,  motion_2d, motion_3d, makeup, light_makeup, motion_gesture
-    // S1_01 : beauty, beauty_image, beauty_shape, beauty_makeup, lut,  motion_2d, motion_3d, makeup, light_makeup
-    // S1_00 : beauty, beauty_image, beauty_shape, beauty_makeup, lut
-    // A1_06 : beauty, beauty_image, beauty_base_shape, lut, motion_2d, makeup
-    // A1_05 : beauty, beauty_image, beauty_base_shape, lut, motion_2d, segmentation
-    // A1_04 : beauty, beauty_image, beauty_general_shape, lut
-    // A1_03 : beauty, beauty_image, beauty_general_shape, lut, motion_2d
-    // A1_02 : beauty, beauty_image, beauty_base_shape, lut, motion_2d
-    // A1_01 : beauty, beauty_image, beauty_base_shape, lut
-    // A1_00 : beauty, lut
-    
-    /* 适配多语言示例底代码，每种语言对应一个json文件
-     * 如：beauty_zh_hant （繁体中文）
-     * 以下面板配置是按照S1-07套餐配置，您可以根据自己的套餐自行删减
-     */
+#ifdef index_panel
+    NSString *indexPath = [[NSBundle mainBundle] pathForResource:@"index" ofType:@"json"];
+    // 配置套餐和index路径
+    [[TEUIConfig shareInstance] setPanelViewRes:indexPath effectPlanName:TEEffectPlan_S1_07];
+#else
     NSString *beautyJsonPath = [self jsonPathWithName:@"beauty"];//美颜
     NSString *beautyTemplateJsonPath = [self jsonPathWithName:@"beauty_template"];//模板
     NSString *beautyShapeJsonPath = [self jsonPathWithName:@"beauty_shape"];//高级美型
@@ -152,6 +141,7 @@
     [resArray addObject:@{TEUI_SEGMENTATION : segmentationJsonPath}];
     
     [[TEUIConfig shareInstance] setTEPanelViewResources:resArray];
+#endif
 }
 
 - (NSString *)jsonPathWithName:(NSString *)name {
@@ -162,6 +152,10 @@
 
 - (NSString *)configLanguage {
     //适配多语言示例底代码
+#ifdef index_panel
+    [[TEUIConfig shareInstance] setDisplayNameKey:@"zh"];
+    return nil;
+#else
     NSString *language = [[NSLocale preferredLanguages] firstObject];
     if ([language hasPrefix:@"zh_hant"]) {
         // 繁体中文
@@ -169,6 +163,7 @@
         return @"_zh_hant";
     }
     return @"";
+#endif
 }
 
 - (void)buildUI {
@@ -177,33 +172,64 @@
     self.previewView = [[TEPreviewView alloc] init];
     self.previewView.previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
     [self.view addSubview:self.previewView];
-    [self.previewView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.previewView te_makeConstraints:^(TEMaker *make) {
         make.edges.equalTo(self.view);
     }];
     
+    // 关闭按钮
+    UIButton *closeBtn = [UIButton buttonWithType:UIButtonTypeSystem];
+    [closeBtn setTitle:@"返回" forState:UIControlStateNormal];
+    [closeBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    closeBtn.titleLabel.font = [UIFont systemFontOfSize:16];
+    [closeBtn addTarget:self action:@selector(dismissSelf) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:closeBtn];
+    [closeBtn te_makeConstraints:^(TEMaker *make) {
+        make.top.mas_equalTo(self.view.te_safeAreaTop).offset(10);
+        make.left.offset(16);
+        make.height.mas_equalTo(30);
+    }];
+    
     [self.view addSubview:self.tePanelView];
-    [self.tePanelView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.tePanelView te_makeConstraints:^(TEMaker *make) {
         make.left.right.bottom.mas_equalTo(self.view);
         make.height.mas_equalTo(230);
     }];
     
-    [self.view addSubview:self.exportBtn];
-    [self.exportBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(self.tePanelView.mas_top).offset(-20);
-        make.right.offset(0);
+    // 切换摄像头按钮
+    UIButton *switchBtn = [UIButton buttonWithType:UIButtonTypeSystem];
+    [switchBtn setTitle:@"切换" forState:UIControlStateNormal];
+    [switchBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    switchBtn.titleLabel.font = [UIFont systemFontOfSize:17];
+    [switchBtn addTarget:self action:@selector(switchCamera) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:switchBtn];
+    [switchBtn te_makeConstraints:^(TEMaker *make) {
+        make.top.mas_equalTo(self.view.te_safeAreaTop).offset(10);
+        make.right.offset(-16);
         make.width.mas_equalTo(50);
         make.height.mas_equalTo(30);
     }];
     
     [self.view addSubview:self.mirrorBtn];
-    [self.mirrorBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(self.exportBtn.mas_top).offset(-10);
-        make.right.offset(0);
+    [self.mirrorBtn te_makeConstraints:^(TEMaker *make) {
+        make.top.equalTo(switchBtn.te_bottom).offset(10);
+        make.right.offset(-16);
         make.width.mas_equalTo(50);
         make.height.mas_equalTo(30);
     }];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"切换" style:UIBarButtonItemStylePlain target:self action:@selector(switchCamera)];
+    [self.view addSubview:self.exportBtn];
+    [self.exportBtn te_makeConstraints:^(TEMaker *make) {
+        make.top.equalTo(self.mirrorBtn.te_bottom).offset(10);
+        make.right.offset(-16);
+        make.width.mas_equalTo(50);
+        make.height.mas_equalTo(30);
+    }];
+    
+    [self.view addSubview:self.layoutDirSwitch];
+    [self.layoutDirSwitch te_makeConstraints:^(TEMaker *make) {
+        make.top.equalTo(self.exportBtn.te_bottom).offset(10);
+        make.trailing.offset(-20);
+    }];
     
     // 添加点击手势，用于隐藏/显示底部面板
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(togglePanelVisibility)];
@@ -256,7 +282,7 @@
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         // 更新 tePanelView 的高度约束
         CGFloat panelHeight = 230 + self.view.safeAreaInsets.bottom;
-        [self.tePanelView mas_updateConstraints:^(MASConstraintMaker *make) {
+        [self.tePanelView te_updateConstraints:^(TEMaker *make) {
             make.height.mas_equalTo(panelHeight);
         }];
         [self.view layoutIfNeeded];
@@ -318,6 +344,21 @@
     return _mirrorBtn;
 }
 
+- (UISwitch *)layoutDirSwitch {
+    if (!_layoutDirSwitch) {
+        _layoutDirSwitch = [[UISwitch alloc] init];
+        _layoutDirSwitch.hidden = YES;
+        _layoutDirSwitch.on = [TEUIConfig shareInstance].isLayoutRtl;
+        [_layoutDirSwitch addTarget:self action:@selector(toggleLayoutDirection:) forControlEvents:UIControlEventValueChanged];
+    }
+    return _layoutDirSwitch;
+}
+
+- (void)toggleLayoutDirection:(UISwitch *)sender {
+    [TEUIConfig shareInstance].isLayoutRtl = sender.isOn;
+    [self.tePanelView reloadLayoutDirection];
+}
+
 - (TCEVideoCapture *)videoCapture {
     if (!_videoCapture) {
         _videoCapture = [[TCEVideoCapture alloc] init];
@@ -336,6 +377,10 @@
 }
 
 #pragma mark - Camera
+- (void)dismissSelf {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 - (void)switchCamera {
     [self.videoCapture switchCamera];
 }

@@ -1,0 +1,17 @@
+/* 
+  Localizable.strings
+  TEBeautyDemo - Japanese
+
+  Created for TEBeautyKit localization.
+  
+*/
+
+"panel_makeup" = "メイク";
+"panel_lut" = "フィルター";
+"revert_btn_txt" = "リセット";
+"revert_tip_title" = "リセットしますか？";
+"revert_tip_msg" = "\nリセットすると、すべてのエフェクトがデフォルトに戻ります。この操作は取り消せません";
+"revert_tip_dialog_left_btn" = "キャンセル";
+"greenscreen_import_picture" = "画像をインポート";
+"greenscreen_msg" = "\nグリーンスクリーンの前に立ち、背景を置き換える画像を選択してください";
+"downloading" = "ダウンロード中";
